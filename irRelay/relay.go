@@ -34,6 +34,10 @@ type Ir irrigationRelay
 /*Relays initiated relays*/
 var relays map[string]Ir
 
+func init() {
+	relays = make(map[string]Ir)
+}
+
 /*
 Stop - Set relays to default position
 */
