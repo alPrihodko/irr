@@ -2,7 +2,9 @@ package irRelay
 
 import (
 	"errors"
+	"io"
 	"log"
+	"net/http"
 
 	"github.com/hybridgroup/gobot/platforms/gpio"
 	"github.com/hybridgroup/gobot/platforms/raspi"
@@ -91,4 +93,25 @@ GetMode sets the behavior for the relay
 */
 func (r *Ir) GetMode() string {
 	return r.relayMode
+}
+
+/*RelayHandler - http handler for simple rest */
+func (r *Ir) RelayHandler(w http.ResponseWriter, re *http.Request) {
+	//defer reportPump()
+
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	state := re.FormValue("state")
+	log.Println(state)
+
+	if len(state) == 0 {
+		//log.Println("state requested:")
+		io.WriteString(w, r.GetMode())
+		return
+	}
+
+	errr := r.SetMode(state)
+	if errr != nil {
+		http.Error(w, errr.Error(), http.StatusInternalServerError)
+		return
+	}
 }

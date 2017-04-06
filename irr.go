@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"sync"
 	"syscall"
 
 	//_ "github.com/icattlecoder/godaemon"
@@ -33,13 +32,7 @@ var INTERVAL int
 
 var conf Config
 
-type socketConns struct {
-	ws   map[int32]*websocket.Conn
-	lock *sync.Mutex
-}
-
-var conns socketConns
-var rconns socketConns
+//var conns socketConns
 
 //relays
 var ir01 irRelay.Ir
@@ -58,8 +51,7 @@ func main() {
 
 	gbot := gobot.NewGobot()
 
-	conns = socketConns{make(map[int32]*websocket.Conn), &sync.Mutex{}}
-	rconns = socketConns{make(map[int32]*websocket.Conn), &sync.Mutex{}}
+	//conns = socketConns{make(map[int32]*websocket.Conn), &sync.Mutex{}}
 
 	ir01 = irRelay.New("garden", "19")
 	ir02 = irRelay.New("flowerbad", "21")
@@ -75,7 +67,8 @@ func main() {
 	//stop = scheduleT(reportFloat, 10*time.Second, "temp1", 10)
 	//historyData.RestoreFromFile(HISTORYDATASERIAL)
 
-	http.Handle("/echo", websocket.Handler(echoHandler))
+	//http.Handle("/echo", websocket.Handler(echoHandler))
+
 	http.Handle("/relays", websocket.Handler(relHandler))
 
 	http.Handle("/", http.FileServer(http.Dir("/home/pi/w/go/src/irrigation")))

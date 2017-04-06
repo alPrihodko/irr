@@ -77,22 +77,13 @@ func reportConfig() error {
 		return err01
 	}
 
-	for _, ws := range rconns.ws {
+	for _, ws := range conns.ws {
 		m, err02 := ws.Write(b)
 		if err02 != nil {
 			return err02
 		}
 		log.Println(m)
 	}
-
-	/*
-		currentState.PumpState = home.GetPump()
-		currentState.HeaterState = home.GetHeat()
-		err := reportCurrentState(&currentState)
-		if err != nil {
-			home.ReportAlert(err.Error(), "Cannot report Temp to socket")
-		}
-	*/
 
 	return nil
 }
