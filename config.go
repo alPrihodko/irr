@@ -69,27 +69,13 @@ func (q *Config) loadConfig() error {
 	return nil
 }
 
-func reportConfig() error {
-	r := stringReport{"configChanged", "state", strconv.Itoa(conf.IrInterval)}
-
-	b, err01 := json.Marshal(r)
-	if err01 != nil {
-		return err01
-	}
-
-	for _, ws := range conns.ws {
-		m, err02 := ws.Write(b)
-		if err02 != nil {
-			return err02
-		}
-		log.Println(m)
-	}
-
+func notifyConfigChanged() error {
+	wh.ReportWsEvent("configChanged", "1")
 	return nil
 }
 
 func configHandler(w http.ResponseWriter, r *http.Request) {
-	defer reportConfig()
+	defer notifyConfigChanged()
 	d, errs := conf.ToJSON()
 	if errs != nil {
 		log.Println(errs.Error())

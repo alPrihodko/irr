@@ -4,11 +4,24 @@ import (
 	"bytes"
 	"encoding/json"
 	"goHome/home"
+	"irrigation/wsHandler"
 	"log"
+	"sync"
 	"time"
 
 	"golang.org/x/net/websocket"
 )
+
+/*
+MsgCommand - simple comm protocol to deliver infor to server
+*/
+type MsgCommand struct {
+	sync.Mutex
+	Command string `json:"Command, string"`
+	Object  string `json:"Object, string"`
+	Param1  string `json:"Param1, string"`
+	Param2  string `json:"Param2, string"`
+}
 
 func execute(c *MsgCommand) error {
 	defer c.Unlock()
@@ -29,13 +42,7 @@ func relHandler(ws *websocket.Conn) {
 
 	var id = int32(time.Now().Unix())
 
-	wh := WsHandler.New(id, ws)
-	defer func() {
-		wh
-		rconns.lock.Lock()
-		delete(rconns.ws, id)
-		rconns.lock.Unlock()
-	}()
+	wh = wsHandler.New(id, ws)
 
 	msg := make([]byte, 512)
 	for {

@@ -9,6 +9,12 @@ import (
 	"golang.org/x/net/websocket"
 )
 
+type stringReport struct {
+	Type  string
+	Key   string
+	Value string
+}
+
 type socketConns struct {
 	ws   map[int32]*websocket.Conn
 	lock *sync.Mutex
@@ -26,10 +32,6 @@ type WsHandler wsHandler
 func init() {
 	conns = socketConns{make(map[int32]*websocket.Conn), &sync.Mutex{}}
 }
-
-//func GetConns() *socketConns {
-//	return *conns
-//}
 
 /*New - registers new connection*/
 func New(id int32, ws *websocket.Conn) WsHandler {

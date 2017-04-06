@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"irrigation/irRelay"
+	"irrigation/wsHandler"
 	"log"
 	"net/http"
 	"os"
@@ -38,6 +39,8 @@ var conf Config
 var ir01 irRelay.Ir
 var ir02 irRelay.Ir
 var ir03 irRelay.Ir
+
+var wh wsHandler.WsHandler
 
 //var currentState home.HData
 //var historyData home.HistoryData
