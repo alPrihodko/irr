@@ -5,20 +5,25 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"os"
+	"strconv"
 	"testing"
 )
 
 var host = "http://192.168.1.46:1235"
 
-func TestInit(t *testing.T) {
+func TestMain(m *testing.M) {
+	// call flag.Parse() here if TestMain uses flags
+	os.Exit(m.Run())
+}
+
+func TestR01(t *testing.T) {
 	resp := httptest.NewRecorder()
 
 	uri := "r01?"
 	unlno := "Off"
-
 	param := make(url.Values)
 	param["state"] = []string{unlno}
-	t.Log("start")
 	req, err := http.NewRequest("GET", host+"/"+uri+param.Encode(), nil)
 	if err != nil {
 		t.Fatal(err)
@@ -29,6 +34,10 @@ func TestInit(t *testing.T) {
 		t.Fail()
 	} else {
 		t.Log(string(p))
+		if resp.Code != 200 {
+			t.Error("Error code: " + strconv.Itoa(resp.Code))
+			t.Fail()
+		}
 		//if strings.Contains(string(p), "Error") {
 		//        t.Errorf("header response shouldn't return error: %s", p)
 		//} else if !strings.Contains(string(p), `expected result`) {
