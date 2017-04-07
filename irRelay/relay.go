@@ -3,6 +3,7 @@ package irRelay
 import (
 	"errors"
 	"io"
+	"irrigation/wsHandler"
 	"log"
 	"net/http"
 
@@ -96,7 +97,7 @@ func (r *Ir) GetMode() string {
 }
 
 /*RelayHandler - http handler for simple rest */
-func (r *Ir) RelayHandler(w http.ResponseWriter, re *http.Request) {
+func (r *Ir) RelayHandler(w http.ResponseWriter, re *http.Request, wh wsHandler.WsHandler) {
 	//defer reportPump()
 
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -114,4 +115,6 @@ func (r *Ir) RelayHandler(w http.ResponseWriter, re *http.Request) {
 		http.Error(w, errr.Error(), http.StatusInternalServerError)
 		return
 	}
+	wh.ReportWsEvent("relayStateChanged", r.Relay.Name())
+
 }
