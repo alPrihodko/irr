@@ -10,7 +10,7 @@ import (
 	"testing"
 )
 
-var host = "http://192.168.1.46:1235"
+var host = "http://sasha123.ddns.ukrtel.net:1235"
 
 func TestMain(m *testing.M) {
 	// call flag.Parse() here if TestMain uses flags

@@ -56,9 +56,9 @@ func main() {
 
 	//conns = socketConns{make(map[int32]*websocket.Conn), &sync.Mutex{}}
 
-	ir01 = irRelay.New("garden", "19")
-	ir02 = irRelay.New("flowerbad", "21")
-	ir03 = irRelay.New("flowers", "23")
+	ir01 = irRelay.New("garden", "19", &wh)
+	ir02 = irRelay.New("flowerbad", "21", &wh)
+	ir03 = irRelay.New("flowers", "23", &wh)
 
 	//currentState = home.HData{}
 	//currentState.Index = 2

@@ -29,6 +29,7 @@ var r = raspi.NewRaspiAdaptor("raspi")
 type irrigationRelay struct {
 	relayMode string
 	Relay     *gpio.LedDriver
+	Wh        *wsHandler.WsHandler
 }
 
 /*Ir irrigation relay type */
@@ -56,10 +57,12 @@ func Stop() {
 }
 
 /*New - returns new relay instance */
-func New(name string, pin string) Ir {
+func New(name string, pin string, w *wsHandler.WsHandler) Ir {
 	rel := Ir{}
 	rel.Relay = gpio.NewLedDriver(r, name, pin)
 	relays[pin] = rel
+	rel.Wh = w
+	http.HandleFunc("/control/"+rel.Relay.Name(), rel.RelayHandler)
 	return rel
 }
 
@@ -97,7 +100,7 @@ func (r *Ir) GetMode() string {
 }
 
 /*RelayHandler - http handler for simple rest */
-func (r *Ir) RelayHandler(w http.ResponseWriter, re *http.Request, wh wsHandler.WsHandler) {
+func (r *Ir) RelayHandler(w http.ResponseWriter, re *http.Request) {
 	//defer reportPump()
 
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -115,6 +118,6 @@ func (r *Ir) RelayHandler(w http.ResponseWriter, re *http.Request, wh wsHandler.
 		http.Error(w, errr.Error(), http.StatusInternalServerError)
 		return
 	}
-	wh.ReportWsEvent("relayStateChanged", r.Relay.Name())
+	r.Wh.ReportWsEvent("relayStateChanged", r.Relay.Name())
 
 }
