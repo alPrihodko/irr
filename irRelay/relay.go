@@ -119,6 +119,7 @@ func (r *Ir) RelayHandler(w http.ResponseWriter, re *http.Request) {
 		http.Error(w, errr.Error(), http.StatusInternalServerError)
 		return
 	}
+
 	r.Wh.ReportWsEvent("relayStateChanged", r.Relay.Name())
 
 }

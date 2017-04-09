@@ -10,7 +10,7 @@ import (
 	"testing"
 )
 
-var host = "http://sasha123.ddns.ukrtel.net:1235"
+var host = "http://sasha123.ddns.ukrtel.net:1235/control"
 
 func TestMain(m *testing.M) {
 	// call flag.Parse() here if TestMain uses flags
@@ -20,11 +20,12 @@ func TestMain(m *testing.M) {
 func TestR01(t *testing.T) {
 	resp := httptest.NewRecorder()
 
-	uri := "r01?"
+	uri := "garden?"
 	unlno := "Off"
 	param := make(url.Values)
 	param["state"] = []string{unlno}
 	req, err := http.NewRequest("GET", host+"/"+uri+param.Encode(), nil)
+	t.Log(req.URL.String())
 	if err != nil {
 		t.Fatal(err)
 	}
