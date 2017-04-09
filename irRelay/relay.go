@@ -58,10 +58,11 @@ func Stop() {
 
 /*New - returns new relay instance */
 func New(name string, pin string, w *wsHandler.WsHandler) Ir {
-	rel := Ir{}
-	rel.Relay = gpio.NewLedDriver(r, name, pin)
+	rel := Ir{OFF, gpio.NewLedDriver(r, name, pin), w}
+	rel.Relay.On()
+	//rel.Relay =
 	relays[pin] = rel
-	rel.Wh = w
+	//rel.Wh = w
 	http.HandleFunc("/control/"+rel.Relay.Name(), rel.RelayHandler)
 	return rel
 }
@@ -105,11 +106,11 @@ func (r *Ir) RelayHandler(w http.ResponseWriter, re *http.Request) {
 
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	state := re.FormValue("state")
-	log.Println(state)
+	//log.Println(state)
 
 	if len(state) == 0 {
 		//log.Println("state requested:")
-		io.WriteString(w, r.GetMode())
+		io.WriteString(w, ":"+r.GetMode())
 		return
 	}
 
