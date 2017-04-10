@@ -8,6 +8,11 @@ const (
 )
 
 /*
+HOST - hosted here (for tests)
+*/
+const HOST = "http://sasha123.ddns.ukrtel.net:1235"
+
+/*
 DropboxClientid - client id
 */
 const DropboxClientid = "mhde2yglerq0gcz"

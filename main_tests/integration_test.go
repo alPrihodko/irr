@@ -2,47 +2,59 @@ package main_test
 
 import (
 	"io/ioutil"
+	"irrigation/home"
+	"irrigation/irRelay"
 	"net/http"
-	"net/http/httptest"
-	"net/url"
 	"os"
-	"strconv"
 	"testing"
 )
-
-var host = "http://sasha123.ddns.ukrtel.net:1235/control"
 
 func TestMain(m *testing.M) {
 	// call flag.Parse() here if TestMain uses flags
 	os.Exit(m.Run())
 }
 
-func TestR01(t *testing.T) {
-	resp := httptest.NewRecorder()
+func TestGarden(t *testing.T) {
+	//ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	call(home.HOST+"/control/garden?sate="+irRelay.OFF, t)
+	callCmp(home.HOST+"/control/garden", irRelay.OFF, t)
+	call(home.HOST+"/control/garden?sate="+irRelay.ON, t)
+	callCmp(home.HOST+"/control/garden", irRelay.ON, t)
+}
 
-	uri := "garden?"
-	unlno := "Off"
-	param := make(url.Values)
-	param["state"] = []string{unlno}
-	req, err := http.NewRequest("GET", host+"/"+uri+param.Encode(), nil)
-	t.Log(req.URL.String())
+func call(url string, t *testing.T) {
+	res, err := http.Get(url)
+
 	if err != nil {
-		t.Fatal(err)
+		t.Log(err.Error())
+		t.Fatal()
 	}
 
-	http.DefaultServeMux.ServeHTTP(resp, req)
-	if p, err := ioutil.ReadAll(resp.Body); err != nil {
+	rb, err := ioutil.ReadAll(res.Body)
+	res.Body.Close()
+	if err != nil {
+		t.Fatal()
+	}
+
+	t.Log(string(rb))
+}
+
+func callCmp(url string, cmp string, t *testing.T) {
+	res, err := http.Get(url)
+
+	if err != nil {
+		t.Log(err.Error())
+		t.Fatal()
+	}
+
+	rb, err := ioutil.ReadAll(res.Body)
+	res.Body.Close()
+	if err != nil {
+		t.Fatal()
+	}
+
+	t.Log(string(rb))
+	if string(rb) != cmp {
 		t.Fail()
-	} else {
-		t.Log(string(p))
-		if resp.Code != 200 {
-			t.Error("Error code: " + strconv.Itoa(resp.Code))
-			t.Fail()
-		}
-		//if strings.Contains(string(p), "Error") {
-		//        t.Errorf("header response shouldn't return error: %s", p)
-		//} else if !strings.Contains(string(p), `expected result`) {
-		//        t.Errorf("header response doen't match:\n%s", p)
-		//}
 	}
 }

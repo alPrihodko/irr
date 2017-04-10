@@ -110,7 +110,7 @@ func (r *Ir) RelayHandler(w http.ResponseWriter, re *http.Request) {
 
 	if len(state) == 0 {
 		//log.Println("state requested:")
-		io.WriteString(w, ":"+r.GetMode())
+		io.WriteString(w, r.GetMode())
 		return
 	}
 
