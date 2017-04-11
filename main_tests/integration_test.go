@@ -16,7 +16,7 @@ func TestMain(m *testing.M) {
 
 func TestGarden(t *testing.T) {
 	//ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
-	call(home.HOST+"/control/garden?sate="+irRelay.OFF, t)
+	call(home.HOST+"/control/garden?sate="+"unkn", t)
 	callCmp(home.HOST+"/control/garden", irRelay.OFF, t)
 	call(home.HOST+"/control/garden?sate="+irRelay.ON, t)
 	callCmp(home.HOST+"/control/garden", irRelay.ON, t)

@@ -31,7 +31,7 @@ type irrigationRelay struct {
 	RelayMode  string `json:"RelayMode, string"`
 	Relay      *gpio.LedDriver
 	Wh         *wsHandler.WsHandler
-	RelayState string `json:"State, boolean"`
+	RelayState bool `json:"State, boolean"`
 }
 
 /*Ir irrigation relay type */
@@ -60,7 +60,7 @@ func Stop() {
 
 /*New - returns new relay instance */
 func New(name string, pin string, w *wsHandler.WsHandler) Ir {
-	rel := Ir{OFF, gpio.NewLedDriver(r, name, pin), w, "false"}
+	rel := Ir{OFF, gpio.NewLedDriver(r, name, pin), w, false}
 	rel.Relay.On()
 	//rel.Relay =
 	relays[pin] = rel
@@ -73,6 +73,7 @@ func New(name string, pin string, w *wsHandler.WsHandler) Ir {
 SetMode sets the behavior for the relay
 */
 func (r *Ir) SetMode(str string) error {
+
 	if str != ON && str != OFF && str != AUTO {
 		return errors.New("Wrong parameter: " + str + " constant ON/OFF/AUTO expected")
 	}
@@ -111,13 +112,16 @@ func (r *Ir) GetState() bool {
 
 /*RelayHandler - http handler for simple rest */
 func (r *Ir) RelayHandler(w http.ResponseWriter, re *http.Request) {
-	//defer reportPump()
 
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	state := re.FormValue("state")
+	log.Println("State: " + state)
+
+	//set or get
 	if len(state) == 0 {
 		//log.Println("state requested:")
+		r.RelayState = r.GetState()
 		b, err := r.ToJSON()
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -127,6 +131,7 @@ func (r *Ir) RelayHandler(w http.ResponseWriter, re *http.Request) {
 		return
 	}
 
+	//set
 	errr := r.SetMode(state)
 	if errr != nil {
 		http.Error(w, errr.Error(), http.StatusInternalServerError)
