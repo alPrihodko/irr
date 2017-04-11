@@ -1,6 +1,7 @@
 package irRelay
 
 import (
+	"encoding/json"
 	"errors"
 	"io"
 	"irrigation/wsHandler"
@@ -27,9 +28,10 @@ const (
 var r = raspi.NewRaspiAdaptor("raspi")
 
 type irrigationRelay struct {
-	relayMode string
-	Relay     *gpio.LedDriver
-	Wh        *wsHandler.WsHandler
+	RelayMode  string `json:"RelayMode, string"`
+	Relay      *gpio.LedDriver
+	Wh         *wsHandler.WsHandler
+	RelayState string `json:"State, boolean"`
 }
 
 /*Ir irrigation relay type */
@@ -58,7 +60,7 @@ func Stop() {
 
 /*New - returns new relay instance */
 func New(name string, pin string, w *wsHandler.WsHandler) Ir {
-	rel := Ir{OFF, gpio.NewLedDriver(r, name, pin), w}
+	rel := Ir{OFF, gpio.NewLedDriver(r, name, pin), w, "false"}
 	rel.Relay.On()
 	//rel.Relay =
 	relays[pin] = rel
@@ -89,7 +91,7 @@ func (r *Ir) SetMode(str string) error {
 		}
 	}
 
-	r.relayMode = str
+	r.RelayMode = str
 	return nil
 }
 
@@ -97,7 +99,14 @@ func (r *Ir) SetMode(str string) error {
 GetMode sets the behavior for the relay
 */
 func (r *Ir) GetMode() string {
-	return r.relayMode
+	return r.RelayMode
+}
+
+/*
+GetState sets the behavior for the relay
+*/
+func (r *Ir) GetState() bool {
+	return r.Relay.State()
 }
 
 /*RelayHandler - http handler for simple rest */
@@ -105,12 +114,16 @@ func (r *Ir) RelayHandler(w http.ResponseWriter, re *http.Request) {
 	//defer reportPump()
 
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	state := re.FormValue("state")
-	//log.Println(state)
 
+	state := re.FormValue("state")
 	if len(state) == 0 {
 		//log.Println("state requested:")
-		io.WriteString(w, r.GetMode())
+		b, err := r.ToJSON()
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		io.WriteString(w, string(b))
 		return
 	}
 
@@ -122,4 +135,16 @@ func (r *Ir) RelayHandler(w http.ResponseWriter, re *http.Request) {
 
 	r.Wh.ReportWsEvent("relayStateChanged", r.Relay.Name())
 
+}
+
+/*
+ToJSON returns serialized date
+*/
+func (r *Ir) ToJSON() (d []byte, err error) {
+
+	b, err := json.Marshal(r)
+	if err != nil {
+		return nil, err
+	}
+	return b, nil
 }
