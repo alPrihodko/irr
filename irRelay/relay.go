@@ -28,10 +28,10 @@ const (
 var r = raspi.NewRaspiAdaptor("raspi")
 
 type irrigationRelay struct {
-	relayMode  string `json:"relayMode, string"`
+	RelayMode  string `json:"RelayMode, string"`
 	Relay      *gpio.LedDriver
 	Wh         *wsHandler.WsHandler
-	relayState bool `json:"state, boolean"`
+	RelayState bool `json:"State, boolean"`
 }
 
 /*Ir irrigation relay type */
@@ -92,7 +92,7 @@ func (r *Ir) SetMode(str string) error {
 		}
 	}
 
-	r.relayMode = str
+	r.RelayMode = str
 	return nil
 }
 
@@ -100,7 +100,7 @@ func (r *Ir) SetMode(str string) error {
 GetMode sets the behavior for the relay
 */
 func (r *Ir) GetMode() string {
-	return r.relayMode
+	return r.RelayMode
 }
 
 /*
@@ -121,7 +121,7 @@ func (r *Ir) RelayHandler(w http.ResponseWriter, re *http.Request) {
 	//set or get
 	if len(state) == 0 {
 		//log.Println("state requested:")
-		r.relayState = r.GetState()
+		r.RelayState = r.GetState()
 		b, err := r.ToJSON()
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
