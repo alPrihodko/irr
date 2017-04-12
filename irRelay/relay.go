@@ -73,26 +73,32 @@ func New(name string, pin string, w *wsHandler.WsHandler) Ir {
 SetMode sets the behavior for the relay
 */
 func (r *Ir) SetMode(str string) error {
-
+	log.Println("irRelay.SetMode:")
 	if str != ON && str != OFF && str != AUTO {
+		log.Println("irRelay.SetMode: Wrong parameter")
 		return errors.New("Wrong parameter: " + str + " constant ON/OFF/AUTO expected")
 	}
 
 	if str == ON {
+		log.Println("irRelay.SetMode: On")
 		err := r.Relay.Off()
 		if err != nil {
 			return err
 		}
+		log.Println("irRelay.SetMode: ", r.Relay.State())
 	}
 
 	if str == OFF || str == AUTO {
+		log.Println("irRelay.SetMode: Oаа")
 		err := r.Relay.On()
 		if err != nil {
 			return err
 		}
+		log.Println("irRelay.SetMode: ", r.Relay.State())
 	}
 
 	r.RelayMode = str
+	log.Println("irRelay.SetMode: set to ", r.RelayMode)
 	return nil
 }
 
@@ -115,11 +121,11 @@ func (r *Ir) RelayHandler(w http.ResponseWriter, re *http.Request) {
 
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
-	state := re.FormValue("state")
-	log.Println("State: " + state)
+	st := re.FormValue("mode")
+	log.Println("Mode: " + st)
 
 	//set or get
-	if len(state) == 0 {
+	if len(st) == 0 {
 		//log.Println("state requested:")
 		r.RelayState = r.GetState()
 		b, err := r.ToJSON()
@@ -132,7 +138,7 @@ func (r *Ir) RelayHandler(w http.ResponseWriter, re *http.Request) {
 	}
 
 	//set
-	errr := r.SetMode(state)
+	errr := r.SetMode(st)
 	if errr != nil {
 		http.Error(w, errr.Error(), http.StatusInternalServerError)
 		return

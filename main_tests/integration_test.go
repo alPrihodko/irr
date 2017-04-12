@@ -1,7 +1,8 @@
 package main_test
 
 import (
-	"io/ioutil"
+	"encoding/json"
+	"fmt"
 	"irrigation/home"
 	"irrigation/irRelay"
 	"net/http"
@@ -16,30 +17,29 @@ func TestMain(m *testing.M) {
 
 func TestGarden(t *testing.T) {
 	//ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
-	call(home.HOST+"/control/garden?sate="+"unkn", t)
-	callCmp(home.HOST+"/control/garden", irRelay.OFF, t)
-	call(home.HOST+"/control/garden?state="+irRelay.ON, t)
-	callCmp(home.HOST+"/control/garden", irRelay.ON, t)
+	call(home.HOST+"/control/garden?state="+"unkn", t)
+	ret := callCmp(home.HOST+"/control/garden", irRelay.ON, t)
+	if !ret {
+		t.Fail()
+	}
+	call(home.HOST+"/control/garden?mode="+irRelay.ON, t)
+	ret = callCmp(home.HOST+"/control/garden", irRelay.OFF, t)
+	if !ret {
+		t.Fail()
+	}
+
 }
 
 func call(url string, t *testing.T) {
-	res, err := http.Get(url)
+	_, err := http.Get(url)
 
 	if err != nil {
 		t.Log(err.Error())
 		t.Fatal()
 	}
-
-	rb, err := ioutil.ReadAll(res.Body)
-	res.Body.Close()
-	if err != nil {
-		t.Fatal()
-	}
-
-	t.Log(string(rb))
 }
 
-func callCmp(url string, cmp string, t *testing.T) {
+func callCmp(url string, cmp string, t *testing.T) bool {
 	res, err := http.Get(url)
 
 	if err != nil {
@@ -47,14 +47,17 @@ func callCmp(url string, cmp string, t *testing.T) {
 		t.Fatal()
 	}
 
-	rb, err := ioutil.ReadAll(res.Body)
-	res.Body.Close()
-	if err != nil {
-		t.Fatal()
-	}
+	//rb, err := ioutil.ReadAll(res.Body)
+	//res.Body.Close()
+	//if err != nil {
+	//	t.Fatal()
+	//}
 
-	t.Log(string(rb))
-	if string(rb) != cmp {
-		t.Fail()
+	bd := irRelay.Ir{}
+	json.NewDecoder(res.Body).Decode(&bd)
+	fmt.Println(bd)
+	if bd.RelayMode != cmp {
+		return false
 	}
+	return true
 }
