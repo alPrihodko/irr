@@ -28,10 +28,10 @@ const (
 var r = raspi.NewRaspiAdaptor("raspi")
 
 type irrigationRelay struct {
-	relayMode  string
+	relayMode  string `json:"relayMode, string"`
 	Relay      *gpio.LedDriver
 	Wh         *wsHandler.WsHandler
-	relayState bool
+	relayState bool `json:"state, boolean"`
 }
 
 /*Ir irrigation relay type */
@@ -115,11 +115,11 @@ func (r *Ir) RelayHandler(w http.ResponseWriter, re *http.Request) {
 
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
-	st := re.FormValue("mode")
-	log.Println("State: " + st)
+	state := re.FormValue("state")
+	log.Println("State: " + state)
 
 	//set or get
-	if len(st) == 0 {
+	if len(state) == 0 {
 		//log.Println("state requested:")
 		r.relayState = r.GetState()
 		b, err := r.ToJSON()
@@ -132,7 +132,7 @@ func (r *Ir) RelayHandler(w http.ResponseWriter, re *http.Request) {
 	}
 
 	//set
-	errr := r.SetMode(st)
+	errr := r.SetMode(state)
 	if errr != nil {
 		http.Error(w, errr.Error(), http.StatusInternalServerError)
 		return
