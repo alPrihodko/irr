@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"goHome/home"
 	"irrigation/wsHandler"
 	"log"
 	"sync"
@@ -26,14 +25,6 @@ type MsgCommand struct {
 func execute(c *MsgCommand) error {
 	defer c.Unlock()
 	c.Lock()
-
-	if c.Object == home.CommandOnPumpr1 {
-		return home.OnHeat()
-	}
-
-	if c.Object == home.CommandOffPumpr1 {
-		return home.OffHeat()
-	}
 
 	return nil
 }

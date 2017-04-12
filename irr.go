@@ -3,12 +3,14 @@ package main
 import (
 	"flag"
 	"irrigation/irRelay"
+	"irrigation/irr"
 	"irrigation/wsHandler"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	//_ "github.com/icattlecoder/godaemon"
 
@@ -42,8 +44,8 @@ var ir03 irRelay.Ir
 
 var wh wsHandler.WsHandler
 
-//var currentState home.HData
-//var historyData home.HistoryData
+var currentState irr.HData
+var historyData irr.HistoryData
 
 func main() {
 
@@ -56,26 +58,23 @@ func main() {
 
 	//conns = socketConns{make(map[int32]*websocket.Conn), &sync.Mutex{}}
 
-	ir01 = irRelay.New("garden", "19", &wh)
-	ir02 = irRelay.New("flowerbad", "21", &wh)
-	ir03 = irRelay.New("flowers", "23", &wh)
+	ir01 = irRelay.New("garden", "19", &wh, appStateChanged)
+	ir02 = irRelay.New("flowerbad", "21", &wh, appStateChanged)
+	ir03 = irRelay.New("flowers", "23", &wh, appStateChanged)
 
-	//currentState = home.HData{}
-	//currentState.Index = 2
-	//log.Println(currentState.Index)
+	currentState = irr.HData{}
+	currentState.Index = 2
+	log.Println(currentState.Index)
 	flag.IntVar(&INTERVAL, "timeout", 60, "Timeout?")
 	flag.Parse()
 
 	log.Println("Timeout interval to track sensors: ", INTERVAL)
-	//stop = scheduleT(reportFloat, 10*time.Second, "temp1", 10)
-	//historyData.RestoreFromFile(HISTORYDATASERIAL)
-
-	//http.Handle("/echo", websocket.Handler(echoHandler))
+	historyData.RestoreFromFile(HISTORYDATASERIAL)
 
 	http.Handle("/relays", websocket.Handler(relHandler))
 
 	http.Handle("/", http.FileServer(http.Dir("/home/pi/w/go/src/irrigation")))
-	//http.HandleFunc("/control/currentState", cState)
+	http.HandleFunc("/control/currentState", cState)
 	http.HandleFunc("/control/config", configHandler)
 
 	c := make(chan os.Signal, 1)
@@ -87,57 +86,28 @@ func main() {
 	go func() {
 		<-c
 		log.Println("Save history data...")
-		//historyData.SerializeToFile(HISTORYDATASERIAL)
+		historyData.SerializeToFile(HISTORYDATASERIAL)
 		irRelay.Stop()
 		os.Exit(1)
 	}()
 
-	//stop = schedule(reportSensors, time.Duration(INTERVAL)*time.Second, sensors)
-	//      led.Toggle()
-
-	/*
-		work := func() {
-			//defer home.Stop()
-			gobot.Every(time.Duration(INTERVAL)*time.Second, func() {
-				//log.Println("gobot heartbeat")
-
-				//if SENSORS {
-				//	reportSensors(sensors)
-				//}
-
-			})
-
-		}
-	*/
-	//robot := gobot.NewRobot("blinkBot",
-	//	[]gobot.Connection{home.GetRelayAdaptor()},
-	//	[]gobot.Device{home.GetRelHeat(), home.GetRelHeatPump(),
-	//		home.SmokeAlarmSauna, home.SmokeAlarmKitchen},
-	//	work,
-	//)
-
-	//gbot.AddRobot(robot)
-
 	go gbot.Start()
 
-	//stop := scheduleBackup(backupHistoryData, time.Duration(INTERVAL*60)*time.Second, &historyData, HISTORYDATASERIAL)
+	stop := scheduleBackup(backupHistoryData, time.Duration(INTERVAL*60)*time.Second, &historyData, HISTORYDATASERIAL)
 
 	err = http.ListenAndServe(":1235", nil)
 	if err != nil {
 		panic("ListenAndServe: " + err.Error())
 	}
 
-	/*
-		if stop != nil {
-			stop <- true
-		}
-	*/
+	if stop != nil {
+		stop <- true
+	}
 
 }
 
-/*
-func scheduleBackup(what func(*home.HistoryData, string), delay time.Duration,
-	q *home.HistoryData, l string) chan bool {
+func scheduleBackup(what func(*irr.HistoryData, string), delay time.Duration,
+	q *irr.HistoryData, l string) chan bool {
 	stop := make(chan bool)
 
 	go func() {
@@ -154,13 +124,12 @@ func scheduleBackup(what func(*home.HistoryData, string), delay time.Duration,
 	return stop
 }
 
-func backupHistoryData(q *home.HistoryData, local string) {
+func backupHistoryData(q *irr.HistoryData, local string) {
 	historyData.SerializeToFile(local)
 
-	if _, err := DB.UploadFile(local, "/backup/goHome.b64", true, ""); err != nil {
+	if _, err := DB.UploadFile(local, "/backup/irrigation.b64", true, ""); err != nil {
 		log.Printf("Error uploading %s: %s\n", local, err)
 	} else {
 		log.Printf("File %s successfully uploaded\n", local)
 	}
 }
-*/

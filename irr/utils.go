@@ -1,4 +1,4 @@
-package home
+package irr
 
 import (
 	"bytes"
@@ -135,12 +135,12 @@ func Sms(from string, msg string, recipients []string) error {
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
-	defer resp.Body.Close()
-
 	if err != nil {
 		log.Println("Cannot send alert: " + err.Error())
+		resp.Body.Close()
 		return err
 	}
+	defer resp.Body.Close()
 
 	log.Println("response Status:", resp.Status)
 	if resp.StatusCode != http.StatusOK {

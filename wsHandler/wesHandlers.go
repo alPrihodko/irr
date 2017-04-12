@@ -82,13 +82,20 @@ func (w WsHandler) ReportWsEvent(evt string, st string) error {
 		log.Println(m)
 	}
 
-	/*
-		currentState.PumpState = home.GetPump()
-		err := reportCurrentState(&currentState)
-		if err != nil {
-			home.ReportAlert(err.Error(), "Cannot report Temp to socket")
+	return nil
+}
+
+/*
+ReportData - reporting stream
+*/
+func ReportData(d []byte) error {
+
+	for _, ws := range conns.ws {
+		_, err02 := ws.Write(d)
+		if err02 != nil {
+			return err02
 		}
-	*/
+	}
 
 	return nil
 }

@@ -24,14 +24,17 @@ const (
 	//TESTS = true
 )
 
+type fn func()
+
 //"github.com/hybridgroup/gobot"
 var r = raspi.NewRaspiAdaptor("raspi")
 
 type irrigationRelay struct {
-	RelayMode  string `json:"RelayMode, string"`
-	Relay      *gpio.LedDriver
-	Wh         *wsHandler.WsHandler
-	RelayState bool `json:"State, boolean"`
+	RelayMode    string `json:"RelayMode, string"`
+	Relay        *gpio.LedDriver
+	Wh           *wsHandler.WsHandler
+	RelayState   bool `json:"State, boolean"`
+	stateChanged fn
 }
 
 /*Ir irrigation relay type */
@@ -59,8 +62,8 @@ func Stop() {
 }
 
 /*New - returns new relay instance */
-func New(name string, pin string, w *wsHandler.WsHandler) Ir {
-	rel := Ir{OFF, gpio.NewLedDriver(r, name, pin), w, false}
+func New(name string, pin string, w *wsHandler.WsHandler, f fn) Ir {
+	rel := Ir{OFF, gpio.NewLedDriver(r, name, pin), w, false, f}
 	rel.Relay.On()
 	//rel.Relay =
 	relays[pin] = rel
@@ -113,7 +116,8 @@ func (r *Ir) GetMode() string {
 GetState sets the behavior for the relay
 */
 func (r *Ir) GetState() bool {
-	return r.Relay.State()
+	r.RelayState = r.Relay.State()
+	return r.RelayState
 }
 
 /*RelayHandler - http handler for simple rest */

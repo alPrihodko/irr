@@ -1,4 +1,4 @@
-package home
+package irr
 
 const (
 	emailFrom         = "alPrihodko@gmail.com"

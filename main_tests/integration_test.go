@@ -3,8 +3,8 @@ package main_test
 import (
 	"encoding/json"
 	"fmt"
-	"irrigation/home"
 	"irrigation/irRelay"
+	"irrigation/irr"
 	"net/http"
 	"os"
 	"testing"
@@ -17,13 +17,13 @@ func TestMain(m *testing.M) {
 
 func TestGarden(t *testing.T) {
 	//ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
-	call(home.HOST+"/control/garden?state="+"unkn", t)
-	ret := callCmp(home.HOST+"/control/garden", irRelay.ON, t)
+	call(irr.HOST+"/control/garden?mode="+irRelay.OFF, t)
+	ret := callCmp(irr.HOST+"/control/garden", irRelay.ON, t)
 	if !ret {
 		t.Fail()
 	}
-	call(home.HOST+"/control/garden?mode="+irRelay.ON, t)
-	ret = callCmp(home.HOST+"/control/garden", irRelay.OFF, t)
+	call(irr.HOST+"/control/garden?mode="+irRelay.ON, t)
+	ret = callCmp(irr.HOST+"/control/garden", irRelay.OFF, t)
 	if !ret {
 		t.Fail()
 	}
