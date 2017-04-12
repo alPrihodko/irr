@@ -28,10 +28,10 @@ const (
 var r = raspi.NewRaspiAdaptor("raspi")
 
 type irrigationRelay struct {
-	RelayMode  string `json:"RelayMode, string"`
+	relayMode  string
 	Relay      *gpio.LedDriver
 	Wh         *wsHandler.WsHandler
-	RelayState bool `json:"State, boolean"`
+	relayState bool
 }
 
 /*Ir irrigation relay type */
@@ -92,7 +92,7 @@ func (r *Ir) SetMode(str string) error {
 		}
 	}
 
-	r.RelayMode = str
+	r.relayMode = str
 	return nil
 }
 
@@ -100,7 +100,7 @@ func (r *Ir) SetMode(str string) error {
 GetMode sets the behavior for the relay
 */
 func (r *Ir) GetMode() string {
-	return r.RelayMode
+	return r.relayMode
 }
 
 /*
@@ -115,13 +115,13 @@ func (r *Ir) RelayHandler(w http.ResponseWriter, re *http.Request) {
 
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
-	state := re.FormValue("state")
-	log.Println("State: " + state)
+	st := re.FormValue("mode")
+	log.Println("State: " + st)
 
 	//set or get
-	if len(state) == 0 {
+	if len(st) == 0 {
 		//log.Println("state requested:")
-		r.RelayState = r.GetState()
+		r.relayState = r.GetState()
 		b, err := r.ToJSON()
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -132,7 +132,7 @@ func (r *Ir) RelayHandler(w http.ResponseWriter, re *http.Request) {
 	}
 
 	//set
-	errr := r.SetMode(state)
+	errr := r.SetMode(st)
 	if errr != nil {
 		http.Error(w, errr.Error(), http.StatusInternalServerError)
 		return
