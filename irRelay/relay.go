@@ -63,7 +63,7 @@ func Stop() {
 
 /*New - returns new relay instance */
 func New(name string, pin string, w *wsHandler.WsHandler, f fn) Ir {
-	rel := Ir{OFF, gpio.NewLedDriver(r, name, pin), w, false, f}
+	rel := Ir{"", gpio.NewLedDriver(r, name, pin), w, false, f}
 	rel.Relay.On()
 	//rel.Relay =
 	relays[pin] = rel
