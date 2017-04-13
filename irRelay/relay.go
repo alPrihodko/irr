@@ -101,6 +101,7 @@ func (r *Ir) SetMode(str string) error {
 	}
 
 	r.RelayMode = str
+	r.stateChanged()
 	log.Println("irRelay.SetMode: set to ", r.RelayMode)
 	return nil
 }

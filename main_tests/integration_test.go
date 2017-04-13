@@ -15,19 +15,18 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-func TestGarden(t *testing.T) {
+func TestGardenOff(t *testing.T) {
+	//ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	call(irr.HOST+"/control/garden?mode="+irRelay.ON, t)
+	call(irr.HOST+"/control/garden?mode="+irRelay.OFF, t)
+	callCmp(irr.HOST+"/control/garden", irRelay.OFF, t)
+}
+
+func TestGardenOn(t *testing.T) {
 	//ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	call(irr.HOST+"/control/garden?mode="+irRelay.OFF, t)
-	ret := callCmp(irr.HOST+"/control/garden", irRelay.ON, t)
-	if !ret {
-		t.Fail()
-	}
 	call(irr.HOST+"/control/garden?mode="+irRelay.ON, t)
-	ret = callCmp(irr.HOST+"/control/garden", irRelay.OFF, t)
-	if !ret {
-		t.Fail()
-	}
-
+	callCmp(irr.HOST+"/control/garden", irRelay.ON, t)
 }
 
 func call(url string, t *testing.T) {
@@ -47,16 +46,11 @@ func callCmp(url string, cmp string, t *testing.T) bool {
 		t.Fatal()
 	}
 
-	//rb, err := ioutil.ReadAll(res.Body)
-	//res.Body.Close()
-	//if err != nil {
-	//	t.Fatal()
-	//}
-
 	bd := irRelay.Ir{}
 	json.NewDecoder(res.Body).Decode(&bd)
 	fmt.Println(bd)
 	if bd.RelayMode != cmp {
+		t.Error("Expected: ", cmp, ", got:", bd.RelayMode)
 		return false
 	}
 	return true
