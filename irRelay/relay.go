@@ -76,7 +76,7 @@ func New(name string, pin string, w *wsHandler.WsHandler, f fn) Ir {
 SetMode sets the behavior for the relay
 */
 func (r *Ir) SetMode(str string) error {
-	log.Println("irRelay.SetMode:")
+	log.Println("irRelay.SetMode: " + r.Relay.Name())
 	if str != ON && str != OFF && str != AUTO {
 		log.Println("irRelay.SetMode: Wrong parameter")
 		return errors.New("Wrong parameter: " + str + " constant ON/OFF/AUTO expected")
