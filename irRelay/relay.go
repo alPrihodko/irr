@@ -68,7 +68,6 @@ func New(name string, pin string, w *wsHandler.WsHandler, f fn) Ir {
 	//rel.Relay =
 	relays[pin] = rel
 	//rel.Wh = w
-	http.HandleFunc("/control/"+rel.Relay.Name(), rel.RelayHandler)
 	return rel
 }
 

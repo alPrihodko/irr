@@ -59,8 +59,11 @@ func main() {
 	//conns = socketConns{make(map[int32]*websocket.Conn), &sync.Mutex{}}
 
 	ir01 = irRelay.New("garden", "19", &wh, appStateChanged)
+	http.HandleFunc("/control/"+ir01.Relay.Name(), ir01.RelayHandler)
 	ir02 = irRelay.New("flowerbad", "21", &wh, appStateChanged)
+	http.HandleFunc("/control/"+ir02.Relay.Name(), ir02.RelayHandler)
 	ir03 = irRelay.New("flowers", "23", &wh, appStateChanged)
+	http.HandleFunc("/control/"+ir03.Relay.Name(), ir03.RelayHandler)
 
 	//currentState = irr.HData{}
 	//currentState.Index = 2
