@@ -75,6 +75,7 @@ func main() {
 
 	http.Handle("/", http.FileServer(http.Dir("/home/pi/w/go/src/irrigation")))
 	http.HandleFunc("/control/currentState", cState)
+	http.HandleFunc("/control/hdata", historyData.HistoryDataHandler)
 	http.HandleFunc("/control/config", configHandler)
 
 	c := make(chan os.Signal, 1)

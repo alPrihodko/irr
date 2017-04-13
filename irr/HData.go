@@ -7,9 +7,12 @@ import (
 	"encoding/gob"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
+	"net/http"
 	"os"
+	"strconv"
 	"time"
 )
 
@@ -207,4 +210,26 @@ func (q *HistoryData) RestoreFromFile(name string) error {
 	}
 
 	return nil
+}
+
+/*
+HistoryDataHandler - sends it over http
+*/
+func (q *HistoryData) HistoryDataHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	from, errx := strconv.Atoi(r.URL.Query().Get("from"))
+	if errx != nil {
+		log.Println(errx.Error())
+		from = 0
+	}
+
+	d, errs := q.ToJSON(from)
+	if errs != nil {
+		log.Println(errs.Error())
+		http.Error(w, errs.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	io.WriteString(w, string(d))
 }
