@@ -25,12 +25,15 @@ const LIMIT = 100000
 HData is set of home data values, can be parsed from json
 */
 type HData struct {
+	GardenName  string `json:"GardenName, string"`
 	GardenMode  string `json:"GardenMode, string"`
 	GardenState bool   `json:"GardenState, boolean"`
 
+	FlowerBadName  string `json:"FlowerBadName, string"`
 	FlowerBadMode  string `json:"FlowerBadMode, string"`
 	FlowerBadState bool   `json:"FlowerBadState, boolean"`
 
+	FlowersName  string `json:"FlowersName, string"`
 	FlowersMode  string `json:"FlowersMode, string"`
 	FlowersState bool   `json:"FlowersState, boolean"`
 

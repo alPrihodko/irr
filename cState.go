@@ -10,6 +10,7 @@ import (
 func appStateChanged() {
 	log.Println("app state change triggered")
 
+	irr.CurrentState.GardenName = ir01.Relay.Name()
 	irr.CurrentState.GardenMode = ir01.GetMode()
 	irr.CurrentState.GardenState = ir01.GetState()
 
