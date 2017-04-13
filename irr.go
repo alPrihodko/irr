@@ -44,7 +44,7 @@ var ir03 irRelay.Ir
 
 var wh wsHandler.WsHandler
 
-var currentState irr.HData
+//var currentState irr.HData
 var historyData irr.HistoryData
 
 func main() {
@@ -62,9 +62,9 @@ func main() {
 	ir02 = irRelay.New("flowerbad", "21", &wh, appStateChanged)
 	ir03 = irRelay.New("flowers", "23", &wh, appStateChanged)
 
-	currentState = irr.HData{}
-	currentState.Index = 2
-	log.Println(currentState.Index)
+	//currentState = irr.HData{}
+	//currentState.Index = 2
+	//log.Println(currentState.Index)
 	flag.IntVar(&INTERVAL, "timeout", 60, "Timeout?")
 	flag.Parse()
 
@@ -74,7 +74,7 @@ func main() {
 	http.Handle("/relays", websocket.Handler(relHandler))
 
 	http.Handle("/", http.FileServer(http.Dir("/home/pi/w/go/src/irrigation")))
-	http.HandleFunc("/control/currentState", cState)
+	http.HandleFunc("/control/currentState", irr.CurrentStateHandler)
 	http.HandleFunc("/control/hdata", historyData.HistoryDataHandler)
 	http.HandleFunc("/control/config", configHandler)
 

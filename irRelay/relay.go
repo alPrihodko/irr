@@ -92,7 +92,7 @@ func (r *Ir) SetMode(str string) error {
 	}
 
 	if str == OFF || str == AUTO {
-		log.Println("irRelay.SetMode: Oаа")
+		log.Println("irRelay.SetMode: On")
 		err := r.Relay.On()
 		if err != nil {
 			return err
@@ -102,7 +102,7 @@ func (r *Ir) SetMode(str string) error {
 
 	r.RelayMode = str
 	r.stateChanged()
-	log.Println("irRelay.SetMode: set to ", r.RelayMode)
+	log.Println("irRelay.SetMode: set to ", r.RelayMode, " : ", r.GetMode())
 	return nil
 }
 

@@ -1,43 +1,28 @@
 package main
 
 import (
-	"io"
 	"irrigation/irr"
 	"irrigation/wsHandler"
 	"log"
-	"net/http"
 	"time"
 )
-
-func cState(w http.ResponseWriter, r *http.Request) {
-
-	d, errs := currentState.ToJSON()
-	if errs != nil {
-		log.Println(errs.Error())
-		http.Error(w, errs.Error(), http.StatusInternalServerError)
-		return
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	io.WriteString(w, string(d))
-}
 
 func appStateChanged() {
 	log.Println("app state change triggered")
 
-	currentState.GardenMode = ir01.GetMode()
-	currentState.GardenState = ir01.GetState()
+	irr.CurrentState.GardenMode = ir01.GetMode()
+	irr.CurrentState.GardenState = ir01.GetState()
 
-	currentState.FlowerBadMode = ir02.GetMode()
-	currentState.FlowerBadState = ir02.GetState()
+	irr.CurrentState.FlowerBadMode = ir02.GetMode()
+	irr.CurrentState.FlowerBadState = ir02.GetState()
 
-	currentState.FlowersMode = ir03.GetMode()
-	currentState.FlowersState = ir03.GetState()
+	irr.CurrentState.FlowersMode = ir03.GetMode()
+	irr.CurrentState.FlowersState = ir03.GetState()
 
-	currentState.Timestamp = int(time.Now().Unix())
+	irr.CurrentState.Timestamp = int(time.Now().Unix())
 
 	/*update UI*/
-	d, errs := currentState.ToJSON()
+	d, errs := irr.CurrentState.ToJSON()
 	if errs != nil {
 		irr.ReportAlert(errs.Error(), "Cannot report Temp to socket")
 		return
@@ -48,7 +33,7 @@ func appStateChanged() {
 		irr.ReportAlert(err.Error(), "Cannot report Temp to socket")
 	}
 
-	x := currentState
+	x := irr.CurrentState
 
 	historyData.Push(&x)
 }
