@@ -26,13 +26,13 @@ HData is set of home data values, can be parsed from json
 */
 type HData struct {
 	GardenMode  string `json:"GardenMode, string"`
-	GardenState bool   `json:"GardenState, string"`
+	GardenState bool   `json:"GardenState, boolean"`
 
 	FlowerBadMode  string `json:"FlowerBadMode, string"`
-	FlowerBadState bool   `json:"FlowerBadState, string"`
+	FlowerBadState bool   `json:"FlowerBadState, boolean"`
 
 	FlowersMode  string `json:"FlowersMode, string"`
-	FlowersState bool   `json:"FlowersState, string"`
+	FlowersState bool   `json:"FlowersState, boolean"`
 
 	Timestamp int `json:"Timestamp, int"`
 	Index     int `json:"index, int"`
