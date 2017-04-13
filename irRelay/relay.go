@@ -101,7 +101,6 @@ func (r *Ir) SetMode(str string) error {
 	}
 
 	r.RelayMode = str
-	r.stateChanged()
 	log.Println("irRelay.SetMode: set to ", r.RelayMode, " : ", r.GetMode())
 	return nil
 }
@@ -148,7 +147,7 @@ func (r *Ir) RelayHandler(w http.ResponseWriter, re *http.Request) {
 		http.Error(w, errr.Error(), http.StatusInternalServerError)
 		return
 	}
-
+	r.stateChanged()
 	r.Wh.ReportWsEvent("relayStateChanged", r.Relay.Name())
 
 }
