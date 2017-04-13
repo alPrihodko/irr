@@ -109,6 +109,7 @@ func (r *Ir) SetMode(str string) error {
 GetMode sets the behavior for the relay
 */
 func (r *Ir) GetMode() string {
+	log.Println("return mode for relay: ", r.RelayState, " name: ", r.Relay.Name())
 	return r.RelayMode
 }
 
