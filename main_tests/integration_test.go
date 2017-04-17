@@ -34,7 +34,7 @@ func call(url string, t *testing.T) {
 
 	if err != nil {
 		t.Log(err.Error())
-		t.Fatal()
+		t.Fatal(err.Error())
 	}
 }
 
@@ -43,7 +43,7 @@ func callCmp(url string, cmp string, t *testing.T) bool {
 
 	if err != nil {
 		t.Log(err.Error())
-		t.Fatal()
+		t.Fatal(err.Error())
 	}
 
 	bd := irRelay.Ir{}
