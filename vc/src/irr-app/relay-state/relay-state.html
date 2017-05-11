@@ -1,0 +1,106 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-material/paper-material.html">
+
+<dom-module id="relay-state">
+  <template>
+    <style>
+      :host {
+        display: inline-block;
+      }
+
+      .title {
+          vertical-align: middle;
+          font-size: 15px;
+          padding: 5px;
+          min-width: 150px;
+          display: inline-block;
+      }
+
+      .card-content {
+          font-size: 15px;
+          min-width: 15px;
+          min-height: 15px;
+          vertical-align: middle;
+          text-align: center;
+          padding: 5px;
+          margin: 5px;
+          display: inline-block;
+      }
+
+      .normal {
+        color: black;
+      }
+
+      .red {
+        color: red;
+      }
+
+
+    </style>
+
+    <paper-material elevation="1" class="title">
+      {{name}}:&nbsp;
+      <paper-material elevation="2" class="card-content">
+            <div id="sensor">{{_format(mode)}}</div>
+      </paper-material>
+    </paper-material>
+
+  </template>
+
+
+<script>
+"use strict";
+
+class RelayState  extends Polymer.Element {
+  static get is() { return 'relay-state'; }
+
+    ready() {
+      super.ready();
+    };
+
+    _format(st) {
+        //this.$.state_text = this.sired_temp.value;
+        //console.log("triggered");
+        var response = "";
+        if (st) {
+          this.$.sensor.className = "red";
+          response = "ON";
+        } else {
+          this.$.sensor.className = "normal";
+          response = "OFF";
+        }
+        return response;
+    };
+
+    static get properties() {
+        return {
+          mode: {
+            type: String,
+            readOnly: false,
+            notify: true,
+            value: "n/a",
+            reflectToAttribute: true
+          },
+          state: {
+            type: Boolean,
+            readOnly: false,
+            notify: true,
+            value: "n/a",
+            reflectToAttribute: true
+          },
+          name: {
+            type: String,
+            readOnly: false,
+            notify: true,
+            value: "Measure: ",
+            reflectToAttribute: true
+          }
+        }
+    }
+}
+
+customElements.define(RelayState.is, RelayState);
+
+</script>
+
+</dom-module>
