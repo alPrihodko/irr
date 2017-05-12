@@ -1,6 +1,11 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../bower_components/paper-material/paper-material.html">
-
+ <!-- TODO:
+- get state and mode
+- show state and mode
+- iface to change both params
+- change mode by click
+-->
 <dom-module id="relay-state">
   <template>
     <style>
@@ -38,11 +43,24 @@
 
     </style>
 
+    <iron-ajax
+               id="relayStatus"
+               url="http://[[host]]/control/[[xid]]"
+               handle-as="json"
+               on-response="_handleResponse">
+               <div>ajax</div>
+    </iron-ajax>
+
     <paper-material elevation="1" class="title">
       {{name}}:&nbsp;
       <paper-material elevation="2" class="card-content">
-            <div id="sensor">{{_format(mode)}}</div>
+            <div id="state">{{_format(state)}}</div>
       </paper-material>
+      <br/>
+      <paper-icon-button id="modeauto" icon="image:flash-auto" style="color: blue;"> </paper-icon-button>
+      <paper-icon-button id="modeon" icon="image:flash-on" style="color: red;"> </paper-icon-button>
+      <paper-icon-button id="modeoff" icon="image:flash-off" style="color: blue;"> </paper-icon-button>
+
     </paper-material>
 
   </template>
@@ -56,6 +74,17 @@ class RelayState  extends Polymer.Element {
 
     ready() {
       super.ready();
+      this.$.relayStatus.generateRequest();
+    };
+
+    constructor() {
+        super();
+        this.host = StaticGlobals.GetHostName();
+    };
+
+    _handleResponse(data) {
+        console.log(data.detail.response);
+        this.state = data.detail.response.State;
     };
 
     _format(st) {
@@ -63,10 +92,10 @@ class RelayState  extends Polymer.Element {
         //console.log("triggered");
         var response = "";
         if (st) {
-          this.$.sensor.className = "red";
+          this.$.state.className = "red";
           response = "ON";
         } else {
-          this.$.sensor.className = "normal";
+          this.$.state.className = "normal";
           response = "OFF";
         }
         return response;
@@ -74,6 +103,7 @@ class RelayState  extends Polymer.Element {
 
     static get properties() {
         return {
+
           mode: {
             type: String,
             readOnly: false,
@@ -92,8 +122,19 @@ class RelayState  extends Polymer.Element {
             type: String,
             readOnly: false,
             notify: true,
-            value: "Measure: ",
+            value: "Unnamed: ",
             reflectToAttribute: true
+          },
+          xid: {
+            type: String,
+            readOnly: false,
+            notify: true,
+            value: "Unnamed: ",
+            reflectToAttribute: true
+          },
+          host: {
+              type: String
+              //value: "sasha123.ddns.ukrtel.net:1234"
           }
         }
     }
