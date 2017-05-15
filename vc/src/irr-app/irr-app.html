@@ -93,7 +93,7 @@
         </app-toolbar>
           </app-header>
           <br/>
-          <relay-state xid="garden" name="Garden"></relay-state>
+          <relay-state id="garden" xid="garden" name="Garden"></relay-state>
           <app-drawer id="drawer" swipe-open>
               <div class="drawer-content">
               <h2>[[prop1]]</h2>
@@ -177,16 +177,16 @@
                 //alert(msg)
                 var o = JSON.parse(msg);
                 console.log("value: " + o.Value);
+                /*
                 switch (o.Type) {
-                    case "pumpStateChanged":
+                    case "relayStateChanged":
                         //ctx._setBoilerPumpStatus(o.Value);
+                        ctx.$.garden.update();
                         break;
-
-                    case "heatStateChanged":
-                        //ctx._setHeatStatus(o.Value);
-                        break;
-
+                        // TODO
                 };
+                */
+
             };
 
         }

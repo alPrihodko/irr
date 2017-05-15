@@ -51,15 +51,23 @@
                <div>ajax</div>
     </iron-ajax>
 
+    <iron-ajax
+               id="relayModeSet"
+               url="http://[[host]]/control/[[xid]]?mode=[[mode]]"
+               handle-as="json"
+               on-response="_handleResponseSet">
+               <div>ajax</div>
+    </iron-ajax>
+
     <paper-material elevation="1" class="title">
       {{name}}:&nbsp;
       <paper-material elevation="2" class="card-content">
             <div id="state">{{_format(state)}}</div>
       </paper-material>
       <br/>
-      <paper-icon-button id="modeauto" icon="image:flash-auto" style="color: blue;"> </paper-icon-button>
-      <paper-icon-button id="modeon" icon="image:flash-on" style="color: red;"> </paper-icon-button>
-      <paper-icon-button id="modeoff" icon="image:flash-off" style="color: blue;"> </paper-icon-button>
+      <paper-icon-button id="modeAuto" icon="image:flash-auto" style="color: blue;"> </paper-icon-button>
+      <paper-icon-button id="modeOn" icon="image:flash-on" style="color: red;"> </paper-icon-button>
+      <paper-icon-button id="modeOff" icon="image:flash-off" style="color: blue;"> </paper-icon-button>
 
     </paper-material>
 
@@ -75,7 +83,25 @@ class RelayState  extends Polymer.Element {
     ready() {
       super.ready();
       this.$.relayStatus.generateRequest();
+      this.$.modeAuto.addEventListener('click', e => this._handleClick(e));
+      this.$.modeOn.addEventListener('click', e => this._handleClick(e));
+      this.$.modeOff.addEventListener('click', e => this._handleClick(e));
     };
+
+    _handleClick(e) {
+       console.info(e.target.id + ' was clicked.');
+       switch (e.target.id) {
+         case "modeAuto":
+          this.changeMode(StaticGlobals.AUTO());
+          break;
+         case "modeOn":
+           this.changeMode(StaticGlobals.ON());
+           break;
+         case "modeOff":
+            this.changeMode(StaticGlobals.OFF());
+            break;
+       };
+     };
 
     constructor() {
         super();
@@ -85,6 +111,14 @@ class RelayState  extends Polymer.Element {
     _handleResponse(data) {
         console.log(data.detail.response);
         this.state = data.detail.response.State;
+    };
+
+    update() {
+      this.$.relayStatus.generateRequest();
+    };
+
+    _handleResponseSet(data) {
+        console.log(data.detail);
     };
 
     _format(st) {
@@ -138,7 +172,21 @@ class RelayState  extends Polymer.Element {
           }
         }
     }
-}
+
+    _setmode (mode) {
+      this.mode = mode;
+      this.$.relayModeSet.generateRequest();
+    };
+
+    changeMode(mode) {
+        if (mode != StaticGlobals.ON() && mode != StaticGlobals.OFF() && mode != StaticGlobals.AUTO() && mode != "") {
+          console.log("Unable to change mode to: " + mode);
+          return false;
+        };
+        this._setmode(mode);
+    };
+
+};
 
 customElements.define(RelayState.is, RelayState);
 
