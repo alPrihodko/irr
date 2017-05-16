@@ -177,13 +177,27 @@
                 //alert(msg)
                 var o = JSON.parse(msg);
                 console.log("value: " + o.Value);
-                
+
                 switch (o.Type) {
                     case "relayStateChanged":
                         //ctx._setBoilerPumpStatus(o.Value);
-                        ctx.$.garden.update();
+                        switch (o.Value) {
+                          case "garden":
+                            ctx.$.garden.update();
+                            break;
+                          case "kitchen":
+                            ctx.$.kitchen.update();
+                            break;
+                          case "flowerbad":
+                            ctx.$.flowerbad.update();
+                            break;
+
+                          default:
+                        }
                         break;
-                        // TODO
+
+                    default:
+                    
                 };
 
 

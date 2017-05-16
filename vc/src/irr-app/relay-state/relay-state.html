@@ -66,7 +66,7 @@
       </paper-material>
       <br/>
       <paper-icon-button id="modeAuto" icon="image:flash-auto" style="color: blue;"> </paper-icon-button>
-      <paper-icon-button id="modeOn" icon="image:flash-on" style="color: red;"> </paper-icon-button>
+      <paper-icon-button id="modeOn" icon="image:flash-on" style="color: blue;"> </paper-icon-button>
       <paper-icon-button id="modeOff" icon="image:flash-off" style="color: blue;"> </paper-icon-button>
 
     </paper-material>
@@ -111,8 +111,35 @@ class RelayState  extends Polymer.Element {
     _handleResponse(data) {
         console.log(data.detail.response);
         this.state = data.detail.response.State;
+        this.mode = data.detail.response.RelayMode;
+        this.drawMode();
     };
 
+    drawMode() {
+      console.log("drawMode called with mode: " + this.mode);
+      switch (this.mode) {
+        case "":
+          this.$.modeAuto.style = "color: red;"
+          this.$.modeOn.style = "color: blue;"
+          this.$.modeOff.style = "color: blue;"
+         break;
+        case "Auto":
+          this.$.modeAuto.style = "color: red;"
+          this.$.modeOn.style = "color: blue;"
+          this.$.modeOff.style = "color: blue;"
+         break;
+        case "On":
+          this.$.modeOn.style = "color: red;"
+          this.$.modeAuto.style = "color: blue;"
+          this.$.modeOff.style = "color: blue;"
+          break;
+        case "Off":
+          this.$.modeOff.style = "color: red;"
+          this.$.modeOn.style = "color: blue;"
+          this.$.modeAuto.style = "color: blue;"
+          break;
+      };
+    }
     update() {
       this.$.relayStatus.generateRequest();
     };
