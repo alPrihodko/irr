@@ -36,13 +36,6 @@ func init() {
 	conns = SocketConns{make(map[int32]*websocket.Conn), &sync.Mutex{}}
 }
 
-/*
-GetConns - returns socket connections
-*/
-func GetConns() SocketConns {
-	return conns
-}
-
 /*New - registers new connection*/
 func New(id int32, ws *websocket.Conn) WsHandler {
 	defer conns.lock.Unlock()
@@ -50,6 +43,20 @@ func New(id int32, ws *websocket.Conn) WsHandler {
 	conns.ws[id] = ws
 
 	return WsHandler{id}
+}
+
+/*Destroy - destroys connection*/
+func Destroy(id int32) error {
+	defer conns.lock.Unlock()
+	log.Println("Destroying ws connection")
+	conns.lock.Lock()
+	if _, ok := conns.ws[id]; ok {
+		delete(conns.ws, id)
+		log.Println("Removing connection id: ", id)
+		return nil
+	}
+
+	return errors.New("Unable to Destroy socket handler")
 }
 
 /*Destroy - destroys connection*/
