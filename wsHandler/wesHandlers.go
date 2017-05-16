@@ -15,12 +15,15 @@ type stringReport struct {
 	Value string
 }
 
-type socketConns struct {
+/*
+SocketConns - socket connections
+*/
+type SocketConns struct {
 	ws   map[int32]*websocket.Conn
 	lock *sync.Mutex
 }
 
-var conns socketConns
+var conns SocketConns
 
 type wsHandler struct {
 	Wsid int32
@@ -30,7 +33,14 @@ type wsHandler struct {
 type WsHandler wsHandler
 
 func init() {
-	conns = socketConns{make(map[int32]*websocket.Conn), &sync.Mutex{}}
+	conns = SocketConns{make(map[int32]*websocket.Conn), &sync.Mutex{}}
+}
+
+/*
+GetConns - returns socket connections
+*/
+func GetConns() SocketConns {
+	return conns
 }
 
 /*New - registers new connection*/
