@@ -38,15 +38,18 @@ func New(id int32, ws *websocket.Conn) WsHandler {
 	defer conns.lock.Unlock()
 	conns.lock.Lock()
 	conns.ws[id] = ws
+
 	return WsHandler{id}
 }
 
 /*Destroy - destroys connection*/
 func (w WsHandler) Destroy(id int32) error {
 	defer conns.lock.Unlock()
+	log.Println("Destroying ws connection")
 	conns.lock.Lock()
 	if _, ok := conns.ws[id]; ok {
 		delete(conns.ws, id)
+		log.Println("Removing connection id: ", id)
 		return nil
 	}
 

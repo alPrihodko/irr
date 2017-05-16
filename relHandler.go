@@ -33,6 +33,15 @@ func relHandler(ws *websocket.Conn) {
 
 	var id = int32(time.Now().Unix())
 
+	conns.lock.Lock()
+	conns.ws[id] = ws
+	conns.lock.Unlock()
+	defer func() {
+		rconns.lock.Lock()
+		delete(rconns.ws, id)
+		rconns.lock.Unlock()
+	}()
+
 	wh = wsHandler.New(id, ws)
 
 	msg := make([]byte, 512)

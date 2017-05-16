@@ -26,13 +26,13 @@ func appStateChanged() {
 	/*update UI*/
 	d, errs := irr.CurrentState.ToJSON()
 	if errs != nil {
-		irr.ReportAlert(errs.Error(), "Cannot report Temp to socket")
+		irr.ReportAlert(errs.Error(), "Cannot report current state")
 		return
 	}
 
 	err := wsHandler.ReportData(d)
 	if err != nil {
-		irr.ReportAlert(err.Error(), "Cannot report Temp to socket")
+		irr.ReportAlert(err.Error(), "Cannot report relay state")
 	}
 
 	x := irr.CurrentState
