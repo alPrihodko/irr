@@ -87,16 +87,17 @@
     <app-header reveals effects="waterfall">
         <app-toolbar>
           <paper-icon-button id="toggle" icon="menu"></paper-icon-button>
-          <div main-title>Irrigation control </div>
+          <div main-title>[[apptitle]] </div>
 
 
         </app-toolbar>
           </app-header>
           <br/>
           <relay-state id="garden" xid="garden" name="Garden"></relay-state>
+          <relay-state id="flowerbad" xid="flowerbad" name="FlowerBad and Grape"></relay-state>
           <app-drawer id="drawer" swipe-open>
               <div class="drawer-content">
-              <h2>[[prop1]]</h2>
+              <h2>[[apptitle]]</h2>
 
             </div>
           </app-drawer>
@@ -111,9 +112,9 @@
             }
             static get properties() {
                 return {
-                    prop1: {
+                    apptitle: {
                         type: String,
-                        value: 'irr-app'
+                        value: 'Relay control'
                     },
                     host: {
                         type: String
@@ -197,7 +198,7 @@
                         break;
 
                     default:
-                    
+
                 };
 
 

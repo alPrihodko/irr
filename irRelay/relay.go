@@ -118,7 +118,7 @@ GetState sets the behavior for the relay
 */
 func (r *Ir) GetState() bool {
 	r.RelayState = r.Relay.State()
-	return r.RelayState
+	return !r.RelayState
 }
 
 /*RelayHandler - http handler for simple rest */
