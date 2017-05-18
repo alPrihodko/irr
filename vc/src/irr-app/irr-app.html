@@ -26,6 +26,7 @@
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 
 <link rel="import" href="relay-state/relay-state.html">
+<link rel="import" href="irr-state/irr-state.html">
 
 <script src="../app.js"></script>
 
@@ -88,16 +89,20 @@
         <app-toolbar>
           <paper-icon-button id="toggle" icon="menu"></paper-icon-button>
           <div main-title>[[apptitle]] </div>
-
-
+          <irr-state id="currentstate"></irr-state>
         </app-toolbar>
           </app-header>
           <br/>
-          <relay-state id="garden" xid="garden" name="Garden"></relay-state>
-          <relay-state id="flowerbad" xid="flowerbad" name="FlowerBad and Grape"></relay-state>
+
           <app-drawer id="drawer" swipe-open>
               <div class="drawer-content">
               <h2>[[apptitle]]</h2>
+              <hr/>
+              <br/>
+              <relay-state id="garden" xid="garden" name="Garden"></relay-state>
+              <br/>
+              <br/>
+              <relay-state id="flowerbad" xid="flowerbad" name="FlowerBad and Grape"></relay-state>
 
             </div>
           </app-drawer>
@@ -182,6 +187,7 @@
                 switch (o.Type) {
                     case "relayStateChanged":
                         //ctx._setBoilerPumpStatus(o.Value);
+                        ctx.$.currentstate.update();
                         switch (o.Value) {
                           case "garden":
                             ctx.$.garden.update();
