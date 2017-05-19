@@ -2,7 +2,7 @@
 <link rel="import" href="../../../bower_components/paper-material/paper-material.html">
  <!-- TODO:
 -->
-<dom-module id="irr-state">
+<dom-module id="history-data">
   <template>
     <style>
       :host {
@@ -75,36 +75,37 @@
     </style>
 
     <iron-ajax
-               id="currentState"
-               url="http://[[host]]/control/currentState"
+               id="historyData"
+               url="http://[[host]]/control/hdata"
                handle-as="json"
                on-response="_handleResponse">
                <div>ajax</div>
     </iron-ajax>
+    <template is="dom-repeat" items="{{hdata}}">
+      <paper-material elevation="1" class="card-content">
+        <div class="col1"><b>Garden</b></div>
+        &nbsp; <div class="fixed">{{_format(item.garden.state)}}</div>
+        &nbsp; <div class="fixed">{{item.garden.mode}}</div>
 
-    <paper-material elevation="1" class="card-content">
-      <div class="col1"><b>Garden</b></div>
-      &nbsp; <div class="fixed">{{_format(curr.garden.state)}}</div>
-      &nbsp; <div class="fixed">{{curr.garden.mode}}</div>
+        <div class="col1"><b>Flowerbad</b></div>
+        &nbsp; <div class="fixed">{{_format(item.flowerbad.state)}}</div>
+        &nbsp; <div class="fixed">{{item.flowerbad.mode}}</div>
 
-      <div class="col1"><b>Flowerbad</b></div>
-      &nbsp; <div class="fixed">{{_format(curr.flowerbad.state)}}</div>
-      &nbsp; <div class="fixed">{{curr.flowerbad.mode}}</div>
-
-      &nbsp; <div class="date">{{curr.date}}</div>
-    </paper-material>
+        &nbsp; <div class="date">{{item.date}}</div>
+      </paper-material>
+    </template>
 
   </template>
 
 <script>
 "use strict";
 
-class IrrState  extends Polymer.Element {
-  static get is() { return 'irr-state'; }
+class HistoryData  extends Polymer.Element {
+  static get is() { return 'history-data'; }
 
     ready() {
       super.ready();
-      this.$.currentState.generateRequest();
+      this.$.historyData.generateRequest();
     };
 
 
@@ -115,19 +116,20 @@ class IrrState  extends Polymer.Element {
 
     _handleResponse(data) {
         console.log(data.detail.response);
-        this.curr.garden.mode = data.detail.response.GardenMode;
-        this.curr.garden.state = data.detail.response.GardenState;
-        this.curr.flowerbad.mode = data.detail.response.FlowerBadMode;
-        this.curr.flowerbad.state = data.detail.response.FlowerBadState;
-        this.curr.date = new Date(data.detail.response.Timestamp * 1e3).toLocaleString();
-        this.notifyPath('curr');
-        this.notifyPath('curr.garden');
-        this.notifyPath('curr.flowerbad');
-        this.notifyPath('curr.date');
+        var data = data.detail.response;
+        var j = 0;
+        for (var i = hdata.length; i-- > 0; )
+          this.hdata[j].garden.mode = data[i].GardenMode;
+          this.hdata[j].garden.state = data[i].GardenState;
+          this.hdata[j].flowerbad.mode = data[i].FlowerBadMode;
+          this.hdata[j].flowerbad.state = data[i].FlowerBadState;
+          this.hdata[j].date = new Date(data[i].Timestamp * 1e3).toLocaleString();
+          j++;
+        }
     };
 
     update() {
-      this.$.currentState.generateRequest();
+      this.$.historyData.generateRequest();
     };
 
     _format (st) {
@@ -140,28 +142,20 @@ class IrrState  extends Polymer.Element {
 
     static get properties() {
         return {
-          curr: {
-            type: Object,
+          hdata: {
+            type: Array,
             readOnly: false,
             notify: true,
             value: function() {
-                var curr = {
+                var curr = [{
                   garden: {mode:"n/a", state:false},
                   flowerbad: {mode:"n/a", state:false},
                   date: new Date()
-                }
+                }];
                 return curr;
               },
             reflectToAttribute: true
           },
-          /*
-          historyData: {
-            type: Object,
-            readOnly: false,
-            notify: true,
-            reflectToAttribute: true
-          },
-          */
           host: {
               type: String
               //value: "sasha123.ddns.ukrtel.net:1234"
@@ -170,7 +164,7 @@ class IrrState  extends Polymer.Element {
     }
 };
 
-customElements.define(IrrState.is, IrrState);
+customElements.define(HistoryData.is, HistoryData);
 
 </script>
 

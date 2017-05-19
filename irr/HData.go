@@ -19,7 +19,7 @@ import (
 /*
 LIMIT max amount of history data calues
 */
-const LIMIT = 100000
+const LIMIT = 200
 
 /*
 HData is set of home data values, can be parsed from json
@@ -103,14 +103,6 @@ func (q *HistoryData) ToJSON(from int) (d []byte, err error) {
 
 	if from > 0 {
 		var interval = 1
-
-		if from > 60*60 && old.Len() > 120 {
-			interval = 30
-		}
-
-		if from > 60*60*24 && old.Len() > 300 {
-			interval = 60
-		}
 
 		for i := 0; i < old.Len(); i = i + interval {
 			index := i
