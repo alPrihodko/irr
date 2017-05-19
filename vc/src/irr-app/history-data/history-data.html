@@ -118,14 +118,21 @@ class HistoryData  extends Polymer.Element {
         console.log(data.detail.response);
         var data = data.detail.response;
         var j = 0;
-        for (var i = hdata.length; i-- > 0; )
-          this.hdata[j].garden.mode = data[i].GardenMode;
-          this.hdata[j].garden.state = data[i].GardenState;
-          this.hdata[j].flowerbad.mode = data[i].FlowerBadMode;
-          this.hdata[j].flowerbad.state = data[i].FlowerBadState;
-          this.hdata[j].date = new Date(data[i].Timestamp * 1e3).toLocaleString();
+        for (var i = data.length; i-- > 0; ) {
+          var hd = {
+            garden: {mode:"n/a", state:false},
+            flowerbad: {mode:"n/a", state:false},
+            date: new Date()
+          };
+          this.hdata.push(hd);
+          hd.garden.mode = data[i].GardenMode;
+          hd.garden.state = data[i].GardenState;
+          hd.flowerbad.mode = data[i].FlowerBadMode;
+          hd.flowerbad.state = data[i].FlowerBadState;
+          hd.date = new Date(data[i].Timestamp * 1e3).toLocaleString();
           j++;
         }
+        this.notifySplices('hdata', this.hdata);
     };
 
     update() {
@@ -147,11 +154,7 @@ class HistoryData  extends Polymer.Element {
             readOnly: false,
             notify: true,
             value: function() {
-                var curr = [{
-                  garden: {mode:"n/a", state:false},
-                  flowerbad: {mode:"n/a", state:false},
-                  date: new Date()
-                }];
+                var curr = [];
                 return curr;
               },
             reflectToAttribute: true
