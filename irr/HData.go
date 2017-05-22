@@ -19,7 +19,7 @@ import (
 /*
 LIMIT max amount of history data calues
 */
-const LIMIT = 200
+const LIMIT = 50
 
 /*
 HData is set of home data values, can be parsed from json
@@ -59,12 +59,16 @@ func (q *HistoryData) Push(x interface{}) {
 	item := x.(*HData)
 	item.Index = n
 	*q = append(*q, item)
-	if n > LIMIT {
+	for {
 		old := *q
 		item := old[n-1]
 		item.Index = -1 // for safety
 		*q = old[0 : n-1]
 		item = nil
+		n = len(*q)
+		if n < LIMIT {
+			break
+		}
 	}
 }
 
@@ -78,6 +82,16 @@ func (q *HistoryData) Pop() interface{} {
 	item.Index = -1 // for safety
 	*q = old[0 : n-1]
 	return item
+}
+
+/*
+Last - returns last record
+*/
+func (q *HistoryData) Last() HData {
+	old := *q
+	n := len(old)
+	item := old[n-1]
+	return *item
 }
 
 /*
