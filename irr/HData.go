@@ -59,8 +59,8 @@ func (q *HistoryData) Push(x interface{}) {
 	item := x.(*HData)
 	item.Index = n
 	*q = append(*q, item)
+	old := *q
 	for {
-		old := *q
 		item := old[n-1]
 		item.Index = -1 // for safety
 		*q = old[0 : n-1]
