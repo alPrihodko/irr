@@ -61,7 +61,7 @@ func (q *HistoryData) Push(x interface{}) {
 	*q = append(*q, item)
 	old := *q
 	for {
-		if n <= LIMIT {
+		if n < LIMIT {
 			break
 		}
 		item := old[n-1]
