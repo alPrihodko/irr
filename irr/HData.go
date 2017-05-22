@@ -90,6 +90,9 @@ Last - returns last record
 func (q *HistoryData) Last() HData {
 	old := *q
 	n := len(old)
+	if n == 0 {
+		return HData{}
+	}
 	item := old[n-1]
 	return *item
 }

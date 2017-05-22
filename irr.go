@@ -73,7 +73,7 @@ func main() {
 
 	log.Println("Timeout interval to track sensors: ", INTERVAL)
 	historyData.RestoreFromFile(HISTORYDATASERIAL)
-	//irr.CurrentState = historyData.Last()
+	irr.CurrentState = historyData.Last()
 	http.Handle("/relays", websocket.Handler(relHandler))
 
 	http.Handle("/", http.FileServer(http.Dir("/home/pi/w/go/src/irrigation")))
