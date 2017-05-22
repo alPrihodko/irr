@@ -63,7 +63,7 @@ func (q *HistoryData) Push(x interface{}) {
 	if n >= LIMIT {
 		item := old[0]
 		item.Index = -1 // for safety
-		*q = old[1 : n-1]
+		*q = old[1:n]
 		item = nil
 	}
 }
