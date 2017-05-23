@@ -56,9 +56,6 @@ Push HomeData to HistoryData
 */
 func (q *HistoryData) Push(x interface{}) {
 	n := len(*q)
-	item := x.(*HData)
-	item.Index = n
-	*q = append(*q, item)
 	old := *q
 	if n >= LIMIT {
 		item := old[0]
@@ -66,6 +63,10 @@ func (q *HistoryData) Push(x interface{}) {
 		*q = old[1:n]
 		item = nil
 	}
+	n = len(*q)
+	item := x.(*HData)
+	item.Index = n
+	*q = append(*q, item)
 }
 
 /*
