@@ -70,6 +70,15 @@
                on-response="_handleResponse">
                <div>ajax</div>
     </iron-ajax>
+
+    <iron-ajax
+               id="historyDataTs"
+               url="http://[[host]]/control/hdata?from=[[ts]]"
+               handle-as="json"
+               on-response="_handleResponseTs">
+               <div>ajax</div>
+    </iron-ajax>
+
     <template is="dom-repeat" items="{{hdata}}">
       <paper-material elevation="1" class="card-content">
         <div class="col1"><b>Garden</b></div>
@@ -108,24 +117,55 @@ class HistoryData  extends Polymer.Element {
         var data = data.detail.response;
         var j = 0;
         for (var i = data.length; i-- > 0; ) {
+          if (i ==  data.length-1)  {
+            console.log("Timestmp is set to: " + data[i].Timestamp);
+            this.ts = data[i].Timestamp;
+          }
+
           var hd = {
             garden: {mode:"n/a", state:false},
             flowerbad: {mode:"n/a", state:false},
             date: new Date()
           };
-          this.hdata.push(hd);
           hd.garden.mode = data[i].GardenMode;
           hd.garden.state = data[i].GardenState;
           hd.flowerbad.mode = data[i].FlowerBadMode;
           hd.flowerbad.state = data[i].FlowerBadState;
           hd.date = new Date(data[i].Timestamp * 1e3).toLocaleString();
+          this.hdata.push(hd);
+          j++;
+        }
+        this.notifySplices('hdata', this.hdata);
+    };
+
+    _handleResponseTs(data) {
+        console.log(data.detail.response);
+        var data = data.detail.response;
+        var j = 0;
+
+        for (var i = data.length; i-- > 0; ) {
+          if (i ==  data.length)  {
+            this.ts = data[i].Timestamp;
+          }
+          var hd = {
+            garden: {mode:"n/a", state:false},
+            flowerbad: {mode:"n/a", state:false},
+            date: new Date()
+          };
+          this.hdata.unshift(hd);
+          hd.garden.mode = data[i].GardenMode;
+          hd.garden.state = data[i].GardenState;
+          hd.flowerbad.mode = data[i].FlowerBadMode;
+          hd.flowerbad.state = data[i].FlowerBadState;
+          hd.date = new Date(data[i].Timestamp * 1e3).toLocaleString();
+
           j++;
         }
         this.notifySplices('hdata', this.hdata);
     };
 
     update() {
-      this.$.historyData.generateRequest();
+      this.$.historyDataTs.generateRequest();
     };
 
     _format (st) {
@@ -151,6 +191,12 @@ class HistoryData  extends Polymer.Element {
           host: {
               type: String
               //value: "sasha123.ddns.ukrtel.net:1234"
+          },
+          ts: {
+            type: Number,
+            readOnly: false,
+            notify: true,
+            reflectToAttribute: true
           }
         }
     }

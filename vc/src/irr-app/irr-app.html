@@ -189,6 +189,7 @@
                     case "relayStateChanged":
                         //ctx._setBoilerPumpStatus(o.Value);
                         ctx.$.currentstate.update();
+                        ctx.$.historydata.update();
                         switch (o.Value) {
                           case "garden":
                             ctx.$.garden.update();
@@ -207,7 +208,6 @@
                     default:
 
                 };
-
 
             };
 

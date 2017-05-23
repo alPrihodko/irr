@@ -13,7 +13,6 @@ import (
 	"net/http"
 	"os"
 	"strconv"
-	"time"
 )
 
 /*
@@ -113,8 +112,8 @@ ToJSON returns serialized hash
 func (q *HistoryData) ToJSON(from int) (d []byte, err error) {
 	old := *q
 	sl := HistoryData{}
-	now := int(time.Now().Unix())
-
+	//now := int(time.Now().Unix())
+	log.Println("loading history starting from: ", from)
 	if from > 0 {
 		var interval = 1
 
@@ -125,7 +124,7 @@ func (q *HistoryData) ToJSON(from int) (d []byte, err error) {
 			}
 
 			item := old[index]
-			if item.Timestamp > (now - from) {
+			if item.Timestamp > from {
 				sl.Push(item)
 			}
 		}
