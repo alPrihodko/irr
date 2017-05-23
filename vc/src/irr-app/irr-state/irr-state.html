@@ -88,7 +88,7 @@
       &nbsp; <div class="fixed">{{curr.garden.mode}}</div>
 
       <div class="col1"><b>Flowerbad</b></div>
-      &nbsp; <div class="fixed">{{_format(curr.flowerbad.state)}}</div>
+      &nbsp; <div class="fixed"> {{_format(curr.flowerbad.state)}}</div>
       &nbsp; <div class="fixed">{{curr.flowerbad.mode}}</div>
 
       &nbsp; <div class="date">{{curr.date}}</div>
@@ -133,10 +133,26 @@ class IrrState  extends Polymer.Element {
     _format (st) {
       var ret = "Off";
       if (st) {
+        //this.$.garden.className = "red";
         ret = "On";
+      } else {
+        //this.$.garden.className = "normal";
       }
       return ret;
     }
+
+/*
+    _format_fb (el, st) {
+      var ret = "Off";
+      if (st) {
+        this.$.flowerbad.className = "red";
+        ret = "On";
+      } else {
+        this.$.flowerbad.className = "normal";
+      }
+      return ret;
+    }
+*/
 
     static get properties() {
         return {

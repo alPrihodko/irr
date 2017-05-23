@@ -144,9 +144,11 @@ class HistoryData  extends Polymer.Element {
         var j = 0;
 
         for (var i = data.length; i-- > 0; ) {
-          if (i ==  data.length)  {
+          if (i ==  data.length-1)  {
+            console.log("Timestmp is set to: " + data[i].Timestamp);
             this.ts = data[i].Timestamp;
           }
+
           var hd = {
             garden: {mode:"n/a", state:false},
             flowerbad: {mode:"n/a", state:false},
