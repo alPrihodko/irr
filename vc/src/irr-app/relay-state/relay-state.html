@@ -148,6 +148,18 @@ class RelayState  extends Polymer.Element {
         console.log(data.detail);
     };
 
+    disable () {
+      this.$.modeAuto.disabled  = true;
+      this.$.modeOn.disabled    = true;
+      this.$.modeOff.disabled   = true;
+    };
+
+    enable () {
+      this.$.modeAuto.disabled  = false;
+      this.$.modeOn.disabled    = false;
+      this.$.modeOff.disabled   = false;
+    };
+
     _format(st) {
         //this.$.state_text = this.sired_temp.value;
         //console.log("triggered");

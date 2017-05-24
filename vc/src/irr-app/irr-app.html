@@ -156,6 +156,7 @@
                     ws = new WebSocket(wsurl);
                     ws.onopen = function() {
                         console.log("Connection: " + wsurl + " Opened");
+                        ctx.enable();
                     };
 
                     ws.onmessage = function(msg) {
@@ -165,7 +166,7 @@
 
                     ws.onclose = function(evt) {
                         ws = null;
-
+                        ctx.disable();
                         console.log('ws error: ' + evt.type);
                         setTimeout(function() {
                             ctx._wsconnect(wsurl, handler, ctx)
@@ -176,8 +177,19 @@
                         if (ws.readyState == 1) {
                             console.log('ws error: ' + evt.type);
                         }
+                        ctx.disable();
                     };
                 }
+            };
+
+            disable() {
+                this.$.garden.disable();
+                this.$.flowerbad.disable();
+            };
+
+            enable() {
+              this.$.garden.enable();
+              this.$.flowerbad.enable();
             };
 
             _rhandler(msg, ctx) {
