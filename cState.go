@@ -18,8 +18,8 @@ func appStateChanged() {
 	irr.CurrentState.FlowerBadMode = ir02.GetMode()
 	irr.CurrentState.FlowerBadState = ir02.GetState()
 
-	irr.CurrentState.FlowersMode = ir03.GetMode()
-	irr.CurrentState.FlowersState = ir03.GetState()
+	irr.CurrentState.GrapesMode = ir03.GetMode()
+	irr.CurrentState.GrapesState = ir03.GetState()
 
 	irr.CurrentState.Timestamp = int(time.Now().Unix())
 

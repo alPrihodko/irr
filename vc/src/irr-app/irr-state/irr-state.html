@@ -91,6 +91,10 @@
       &nbsp; <div class="fixed"> <span id="flowerbad">{{_format_f(curr.flowerbad.state)}}</span></div>
       &nbsp; <div class="fixed">{{curr.flowerbad.mode}}</div>
 
+      <div class="col1"><b>Grapes</b></div>
+      &nbsp; <div class="fixed"> <span id="grapes">{{_format_f(curr.grapes.state)}}</span></div>
+      &nbsp; <div class="fixed">{{curr.grapes.mode}}</div>
+
       &nbsp; <div class="date">{{curr.date}}</div>
     </paper-material>
 
@@ -118,10 +122,13 @@ class IrrState  extends Polymer.Element {
         this.curr.garden.state = data.detail.response.GardenState;
         this.curr.flowerbad.mode = data.detail.response.FlowerBadMode;
         this.curr.flowerbad.state = data.detail.response.FlowerBadState;
+        this.curr.grapes.mode = data.detail.response.GrapesMode;
+        this.curr.grapes.state = data.detail.response.GrapesState;
         this.curr.date = new Date(data.detail.response.Timestamp * 1e3).toLocaleString();
         this.notifyPath('curr');
         this.notifyPath('curr.garden');
         this.notifyPath('curr.flowerbad');
+        this.notifyPath('curr.grapes');
         this.notifyPath('curr.date');
     };
 
@@ -150,18 +157,18 @@ class IrrState  extends Polymer.Element {
       }
       return ret;
     }
-/*
-    _format_fb (el, st) {
+
+    _format_g (st) {
       var ret = "Off";
       if (st) {
-        this.$.flowerbad.className = "red";
+        this.$.grapes.className = "red";
         ret = "On";
       } else {
-        this.$.flowerbad.className = "normal";
+        this.$.grapes.className = "normal";
       }
       return ret;
     }
-*/
+
 
     static get properties() {
         return {
@@ -173,6 +180,7 @@ class IrrState  extends Polymer.Element {
                 var curr = {
                   garden: {mode:"n/a", state:false},
                   flowerbad: {mode:"n/a", state:false},
+                  grapes: {mode:"n/a", state:false},
                   date: new Date()
                 }
                 return curr;

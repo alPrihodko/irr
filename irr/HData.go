@@ -32,9 +32,9 @@ type HData struct {
 	FlowerBadMode  string `json:"FlowerBadMode, string"`
 	FlowerBadState bool   `json:"FlowerBadState, boolean"`
 
-	FlowersName  string `json:"FlowersName, string"`
-	FlowersMode  string `json:"FlowersMode, string"`
-	FlowersState bool   `json:"FlowersState, boolean"`
+	GrapesName  string `json:"GrapesName, string"`
+	GrapesMode  string `json:"GrapesMode, string"`
+	GrapesState bool   `json:"GrapesState, boolean"`
 
 	Timestamp int `json:"Timestamp, int"`
 	Index     int `json:"index, int"`
