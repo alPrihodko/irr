@@ -89,6 +89,10 @@
         &nbsp; <div class="fixed">{{_format(item.flowerbad.state)}}</div>
         &nbsp; <div class="fixed">{{item.flowerbad.mode}}</div>
 
+        <div class="col1"><b>Grapes</b></div>
+        &nbsp; <div class="fixed">{{_format(item.grapes.state)}}</div>
+        &nbsp; <div class="fixed">{{item.grapes.mode}}</div>
+
         &nbsp; <div class="date">{{item.date}}</div>
       </paper-material>
       <br/>
@@ -125,12 +129,16 @@ class HistoryData  extends Polymer.Element {
           var hd = {
             garden: {mode:"n/a", state:false},
             flowerbad: {mode:"n/a", state:false},
+            grapes: {mode:"n/a", state:false},
             date: new Date()
           };
           hd.garden.mode = data[i].GardenMode;
           hd.garden.state = data[i].GardenState;
           hd.flowerbad.mode = data[i].FlowerBadMode;
           hd.flowerbad.state = data[i].FlowerBadState;
+          hd.grapes.mode = data[i].GrapesMode;
+          hd.grapes.state = data[i].GrapesState;
+
           hd.date = new Date(data[i].Timestamp * 1e3).toLocaleString();
           this.hdata.push(hd);
           j++;
@@ -152,6 +160,7 @@ class HistoryData  extends Polymer.Element {
           var hd = {
             garden: {mode:"n/a", state:false},
             flowerbad: {mode:"n/a", state:false},
+            grapes: {mode:"n/a", state:false},
             date: new Date()
           };
           this.hdata.unshift(hd);
@@ -159,6 +168,9 @@ class HistoryData  extends Polymer.Element {
           hd.garden.state = data[i].GardenState;
           hd.flowerbad.mode = data[i].FlowerBadMode;
           hd.flowerbad.state = data[i].FlowerBadState;
+          hd.grepes.mode = data[i].GrapesMode;
+          hd.grapes.state = data[i].GrapesState;
+
           hd.date = new Date(data[i].Timestamp * 1e3).toLocaleString();
 
           j++;

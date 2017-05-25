@@ -105,6 +105,10 @@
               <br/>
               <relay-state id="flowerbad" xid="flowerbad" name="FlowerBad and Grape"></relay-state>
 
+              <br/>
+              <br/>
+              <relay-state id="grapes" xid="grapes" name="Grapes"></relay-state>
+
             </div>
           </app-drawer>
 
@@ -137,14 +141,13 @@
 
             ready() {
                 super.ready();
-
                 var drawer = this.$.drawer;
                 this.$.toggle.addEventListener('tap', function() {
                     drawer.toggle();
                 });
 
+                this.disable();
                 this._wsconnect("ws://" + this.host + "/relays", this._rhandler, this);
-
             };
 
             _wsconnect(wsurl, handler, ctx) {
@@ -185,11 +188,13 @@
             disable() {
                 this.$.garden.disable();
                 this.$.flowerbad.disable();
+                this.$.grapes.disable();
             };
 
             enable() {
               this.$.garden.enable();
               this.$.flowerbad.enable();
+              this.$.grapes.enable();
             };
 
             _rhandler(msg, ctx) {
@@ -212,6 +217,9 @@
                           case "flowerbad":
                             ctx.$.flowerbad.update();
                             break;
+                          case "grapes":
+                              ctx.$.grapes.update();
+                              break;
 
                           default:
                         }
