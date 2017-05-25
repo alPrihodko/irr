@@ -31,8 +31,8 @@
 
       .date {
           font-size: 15px;
-          width: 120px;
-          min-width: 120px;
+          width: 100px;
+          min-width: 100px;
           ;min-height: 15px;
           vertical-align: middle;
           text-align: center;
@@ -43,8 +43,8 @@
 
       .col1 {
           font-size: 15px;
-          width: 170px;
-          min-width: 170px;
+          width: 80px;
+          min-width: 80px;
           ;min-height: 15px;
           vertical-align: middle;
           text-align: center;
@@ -81,15 +81,15 @@
 
     <template is="dom-repeat" items="{{hdata}}">
       <paper-material elevation="1" class="card-content">
-        <div class="col1"><b>Garden</b></div>
+        <div class="col1"><b>Город</b></div>
         &nbsp; <div class="fixed">{{_format(item.garden.state)}}</div>
         &nbsp; <div class="fixed">{{item.garden.mode}}</div>
 
-        <div class="col1"><b>Flowerbad</b></div>
+        <div class="col1"><b>Палісад</b></div>
         &nbsp; <div class="fixed">{{_format(item.flowerbad.state)}}</div>
         &nbsp; <div class="fixed">{{item.flowerbad.mode}}</div>
 
-        <div class="col1"><b>Grapes</b></div>
+        <div class="col1"><b>Виногр</b></div>
         &nbsp; <div class="fixed">{{_format(item.grapes.state)}}</div>
         &nbsp; <div class="fixed">{{item.grapes.mode}}</div>
 
@@ -168,7 +168,7 @@ class HistoryData  extends Polymer.Element {
           hd.garden.state = data[i].GardenState;
           hd.flowerbad.mode = data[i].FlowerBadMode;
           hd.flowerbad.state = data[i].FlowerBadState;
-          hd.grepes.mode = data[i].GrapesMode;
+          hd.grapes.mode = data[i].GrapesMode;
           hd.grapes.state = data[i].GrapesState;
 
           hd.date = new Date(data[i].Timestamp * 1e3).toLocaleString();

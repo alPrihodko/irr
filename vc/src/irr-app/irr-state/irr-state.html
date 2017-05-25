@@ -30,8 +30,8 @@
 
       .fixed {
           font-size: 15px;
-          width: 50px;
-          min-width: 50px;
+          width: 30px;
+          min-width: 30px;
           ;min-height: 15px;
           vertical-align: middle;
           text-align: center;
@@ -42,8 +42,8 @@
 
       .date {
           font-size: 15px;
-          width: 160px;
-          min-width: 160px;
+          width: 100px;
+          min-width: 100px;
           ;min-height: 15px;
           vertical-align: middle;
           text-align: center;
@@ -54,8 +54,8 @@
 
       .col1 {
           font-size: 15px;
-          width: 160px;
-          min-width: 160px;
+          width: 80px;
+          min-width: 80px;
           ;min-height: 15px;
           vertical-align: middle;
           text-align: center;
@@ -83,15 +83,15 @@
     </iron-ajax>
 
     <paper-material elevation="1" class="card-content">
-      <div class="col1"><b>Garden</b></div>
+      <div class="col1"><b>Город</b></div>
       &nbsp; <div class="fixed"> <span id="garden">{{_format(curr.garden.state)}}</span></div>
       &nbsp; <div class="fixed">{{curr.garden.mode}}</div>
 
-      <div class="col1"><b>Flowerbad</b></div>
+      <div class="col1"><b>Палісад</b></div>
       &nbsp; <div class="fixed"> <span id="flowerbad">{{_format_f(curr.flowerbad.state)}}</span></div>
       &nbsp; <div class="fixed">{{curr.flowerbad.mode}}</div>
 
-      <div class="col1"><b>Grapes</b></div>
+      <div class="col1"><b>Виногр</b></div>
       &nbsp; <div class="fixed"> <span id="grapes">{{_format_f(curr.grapes.state)}}</span></div>
       &nbsp; <div class="fixed">{{curr.grapes.mode}}</div>
 
