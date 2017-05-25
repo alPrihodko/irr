@@ -3,5 +3,15 @@
     "rules": [
       "polymer-2"
     ]
-  }
+  },
+
+  "builds": [{
+    "bundle": true,
+    "js": {"minify": false},
+    "css": {"minify": true},
+    "html": {"minify": true}
+  }]
+
 }
+
+
