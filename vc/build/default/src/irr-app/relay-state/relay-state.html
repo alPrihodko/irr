@@ -1,0 +1,226 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-material/paper-material.html">
+ <!-- TODO:
+- get state and mode
+- show state and mode
+- iface to change both params
+- change mode by click
+-->
+<dom-module id="relay-state">
+  <template>
+    <style>
+      :host {
+        display: inline-block;
+      }
+
+      .title {
+          vertical-align: middle;
+          font-size: 15px;
+          padding: 5px;
+          min-width: 150px;
+          display: inline-block;
+      }
+
+      .card-content {
+          font-size: 15px;
+          min-width: 15px;
+          min-height: 15px;
+          vertical-align: middle;
+          text-align: center;
+          padding: 5px;
+          margin: 5px;
+          display: inline-block;
+      }
+
+      .normal {
+        color: white;
+      }
+
+      .red {
+        color: red;
+      }
+
+
+    </style>
+
+    <iron-ajax id="relayStatus" url="http://[[host]]/control/[[xid]]" handle-as="json" on-response="_handleResponse">
+               <div>ajax</div>
+    </iron-ajax>
+
+    <iron-ajax id="relayModeSet" url="http://[[host]]/control/[[xid]]?mode=[[mode]]" handle-as="json" on-response="_handleResponseSet">
+               <div>ajax</div>
+    </iron-ajax>
+
+    <paper-material elevation="1" class="title">
+      {{name}}:&nbsp;
+      <paper-material elevation="2" class="card-content">
+            <div id="state">{{_format(state)}}</div>
+      </paper-material>
+      <br>
+      <paper-icon-button id="modeAuto" icon="image:flash-auto" style="color: blue;"> </paper-icon-button>
+      <paper-icon-button id="modeOn" icon="image:flash-on" style="color: blue;"> </paper-icon-button>
+      <paper-icon-button id="modeOff" icon="image:flash-off" style="color: blue;"> </paper-icon-button>
+
+    </paper-material>
+
+  </template>
+
+
+<script>
+"use strict";
+
+class RelayState  extends Polymer.Element {
+  static get is() { return 'relay-state'; }
+
+    ready() {
+      super.ready();
+      this.$.relayStatus.generateRequest();
+      this.$.modeAuto.addEventListener('click', e => this._handleClick(e));
+      this.$.modeOn.addEventListener('click', e => this._handleClick(e));
+      this.$.modeOff.addEventListener('click', e => this._handleClick(e));
+    };
+
+    _handleClick(e) {
+       console.info(e.target.id + ' was clicked.');
+       switch (e.target.id) {
+         case "modeAuto":
+          this.changeMode(StaticGlobals.AUTO());
+          break;
+         case "modeOn":
+           this.changeMode(StaticGlobals.ON());
+           break;
+         case "modeOff":
+            this.changeMode(StaticGlobals.OFF());
+            break;
+       };
+     };
+
+    constructor() {
+        super();
+        this.host = StaticGlobals.GetHostName();
+    };
+
+    _handleResponse(data) {
+        console.log(data.detail.response);
+        this.state = data.detail.response.State;
+        this.mode = data.detail.response.RelayMode;
+        this.drawMode();
+    };
+
+    drawMode() {
+      console.log("drawMode called with mode: " + this.mode);
+      switch (this.mode) {
+        case "":
+          this.$.modeAuto.style = "color: red;"
+          this.$.modeOn.style = "color: blue;"
+          this.$.modeOff.style = "color: blue;"
+         break;
+        case "Auto":
+          this.$.modeAuto.style = "color: red;"
+          this.$.modeOn.style = "color: blue;"
+          this.$.modeOff.style = "color: blue;"
+         break;
+        case "On":
+          this.$.modeOn.style = "color: red;"
+          this.$.modeAuto.style = "color: blue;"
+          this.$.modeOff.style = "color: blue;"
+          break;
+        case "Off":
+          this.$.modeOff.style = "color: red;"
+          this.$.modeOn.style = "color: blue;"
+          this.$.modeAuto.style = "color: blue;"
+          break;
+      };
+    }
+    update() {
+      this.$.relayStatus.generateRequest();
+    };
+
+    _handleResponseSet(data) {
+        console.log(data.detail);
+    };
+
+    disable () {
+      this.$.modeAuto.disabled  = true;
+      this.$.modeOn.disabled    = true;
+      this.$.modeOff.disabled   = true;
+    };
+
+    enable () {
+      this.$.modeAuto.disabled  = false;
+      this.$.modeOn.disabled    = false;
+      this.$.modeOff.disabled   = false;
+    };
+
+    _format(st) {
+        //this.$.state_text = this.sired_temp.value;
+        //console.log("triggered");
+        var response = "";
+        if (st) {
+          this.$.state.className = "red";
+          response = "ON";
+        } else {
+          this.$.state.className = "normal";
+          response = "OFF";
+        }
+        return response;
+    };
+
+    static get properties() {
+        return {
+
+          mode: {
+            type: String,
+            readOnly: false,
+            notify: true,
+            value: "n/a",
+            reflectToAttribute: true
+          },
+          state: {
+            type: Boolean,
+            readOnly: false,
+            notify: true,
+            value: "n/a",
+            reflectToAttribute: true
+          },
+          name: {
+            type: String,
+            readOnly: false,
+            notify: true,
+            value: "Unnamed: ",
+            reflectToAttribute: true
+          },
+          xid: {
+            type: String,
+            readOnly: false,
+            notify: true,
+            value: "Unnamed: ",
+            reflectToAttribute: true
+          },
+          host: {
+              type: String
+              //value: "sasha123.ddns.ukrtel.net:1234"
+          }
+        }
+    }
+
+    _setmode (mode) {
+      this.mode = mode;
+      this.$.relayModeSet.generateRequest();
+    };
+
+    changeMode(mode) {
+        if (mode != StaticGlobals.ON() && mode != StaticGlobals.OFF() && mode != StaticGlobals.AUTO() && mode != "") {
+          console.log("Unable to change mode to: " + mode);
+          return false;
+        };
+        this._setmode(mode);
+    };
+
+};
+
+customElements.define(RelayState.is, RelayState);
+
+</script>
+
+</dom-module>
