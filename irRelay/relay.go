@@ -85,7 +85,7 @@ func (r *Ir) SetMode(str string, prm ...int) error {
 	if len(prm) > 0 {
 		duration = prm[0]
 	}
-	if duration > 30 && duration < 1 {
+	if duration > 30 || duration < 1 {
 		duration = INTERVAL
 	}
 	log.Println("irRelay.SetMode: " + r.Relay.Name())
