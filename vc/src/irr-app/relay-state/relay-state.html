@@ -53,7 +53,7 @@
 
     <iron-ajax
                id="relayModeSet"
-               url="http://[[host]]/control/[[xid]]?mode=[[mode]]"
+               url="http://[[host]]/control/[[xid]]?mode=[[mode]]&duration=[[duration]]"
                handle-as="json"
                on-response="_handleResponseSet">
                <div>ajax</div>
@@ -196,6 +196,13 @@ class RelayState  extends Polymer.Element {
             readOnly: false,
             notify: true,
             value: "Unnamed: ",
+            reflectToAttribute: true
+          },
+          duration:{
+            type: Number,
+            readOnly: false,
+            notify: true,
+            value: 30,
             reflectToAttribute: true
           },
           xid: {
