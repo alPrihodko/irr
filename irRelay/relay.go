@@ -112,6 +112,7 @@ func (r *Ir) SetMode(str string) error {
 	if r.stop != nil {
 		log.Println("Dropping timer")
 		close(r.stop)
+		r.stop = nil
 	}
 
 	r.stateChanged()
