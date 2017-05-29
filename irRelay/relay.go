@@ -61,6 +61,8 @@ func Stop() {
 		if err != nil {
 			log.Println(err.Error())
 		}
+		r.stateChanged()
+		r.Wh.ReportWsEvent("relayStateChanged", r.Relay.Name())
 		log.Println("Wwitch off relay:" + r.Relay.Name())
 	}
 }
@@ -107,17 +109,20 @@ func (r *Ir) SetMode(str string) error {
 	r.RelayMode = str
 	log.Println("irRelay.SetMode: set to ", r.RelayMode, " : ", r.GetMode())
 
-	//if r.stop != nil {
-	//	r.stop <- true
-	//}
-
-	//if r.GetMode() == ON {
-	//	r.stop = r.scheduleRelayAuto(turnoff, time.Duration(INTERVAL*60)*time.Second)
-	//}
+	if r.stop != nil {
+		log.Println("Dropping timer")
+		r.stop <- true
+	}
 
 	r.stateChanged()
 	r.Wh.ReportWsEvent("relayStateChanged", r.Relay.Name())
 
+	if r.GetMode() == ON {
+		log.Println("Try to set scheduler")
+		r.stop = r.scheduleRelayAuto(turnoff, time.Duration(INTERVAL*60)*time.Second)
+	}
+
+	log.Println("All done")
 	return nil
 }
 
@@ -174,12 +179,16 @@ func (r *Ir) scheduleRelayAuto(what func(r *Ir), delay time.Duration) chan bool 
 	go func() {
 		select {
 		case <-time.After(delay):
+			log.Println("returning to AUTO")
 			what(r)
+			log.Println("returned auto mode")
+			return
 		case <-stop:
 			return
 		}
 	}()
 
+	log.Println("Scheduler is prepared...")
 	return stop
 }
 
