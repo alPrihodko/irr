@@ -7,6 +7,7 @@ import (
 	"irrigation/wsHandler"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/hybridgroup/gobot/platforms/gpio"
 	"github.com/hybridgroup/gobot/platforms/raspi"
@@ -20,6 +21,8 @@ const (
 	/*AUTO constant*/
 	AUTO = "Auto"
 
+	/*INTERVAL - default interval to keep relay on*/
+	INTERVAL = 10
 	/*TESTS emanbles test mode*/
 	//TESTS = true
 )
@@ -35,6 +38,7 @@ type irrigationRelay struct {
 	Wh           *wsHandler.WsHandler
 	RelayState   bool `json:"State, boolean"`
 	stateChanged fn
+	stop         chan bool
 }
 
 /*Ir irrigation relay type */
@@ -63,7 +67,7 @@ func Stop() {
 
 /*New - returns new relay instance */
 func New(name string, pin string, w *wsHandler.WsHandler, f fn) Ir {
-	rel := Ir{"", gpio.NewLedDriver(r, name, pin), w, false, f}
+	rel := Ir{"", gpio.NewLedDriver(r, name, pin), w, false, f, nil}
 	rel.Relay.On()
 	//rel.Relay =
 	relays[pin] = rel
@@ -148,9 +152,38 @@ func (r *Ir) RelayHandler(w http.ResponseWriter, re *http.Request) {
 		http.Error(w, errr.Error(), http.StatusInternalServerError)
 		return
 	}
+
 	r.stateChanged()
 	r.Wh.ReportWsEvent("relayStateChanged", r.Relay.Name())
 
+	if r.stop != nil {
+		r.stop <- true
+	}
+
+	if r.GetMode() == ON {
+		r.stop = r.scheduleRelayAuto(turnoff, time.Duration(INTERVAL*60)*time.Second)
+	}
+}
+
+func (r *Ir) scheduleRelayAuto(what func(r *Ir), delay time.Duration) chan bool {
+	stop := make(chan bool)
+	log.Println("Relay timer scheduled")
+
+	go func() {
+		select {
+		case <-time.After(delay):
+			what(r)
+		case <-stop:
+			return
+		}
+	}()
+
+	return stop
+}
+
+func turnoff(r *Ir) {
+	log.Println("Switching to Auto...")
+	r.SetMode(AUTO)
 }
 
 /*
