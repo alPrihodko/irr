@@ -20113,7 +20113,7 @@ Object.defineProperties(x.prototype,{transformCallback:{get:function(){return v}
     },
 
   });
-</script><dom-module id="relay-state" assetpath="src/irr-app/relay-state/"><template><style>:host{display:inline-block;}.title{vertical-align:middle;font-size:15px;padding:5px;min-width:150px;display:inline-block;}.card-content{font-size:15px;min-width:15px;min-height:15px;vertical-align:middle;text-align:center;padding:5px;margin:5px;display:inline-block;}.normal{color:white;}.red{color:red;}</style><iron-ajax id="relayStatus" url="http://[[host]]/control/[[xid]]" handle-as="json" on-response="_handleResponse"><div>ajax</div></iron-ajax><iron-ajax id="relayModeSet" url="http://[[host]]/control/[[xid]]?mode=[[mode]]" handle-as="json" on-response="_handleResponseSet"><div>ajax</div></iron-ajax><paper-material elevation="1" class="title">{{name}}:&nbsp;<paper-material elevation="2" class="card-content"><div id="state">{{_format(state)}}</div></paper-material><br><paper-icon-button id="modeAuto" icon="image:flash-auto" style="color: blue"></paper-icon-button><paper-icon-button id="modeOn" icon="image:flash-on" style="color: blue"></paper-icon-button><paper-icon-button id="modeOff" icon="image:flash-off" style="color: blue"></paper-icon-button></paper-material></template><script>
+</script><dom-module id="relay-state" assetpath="src/irr-app/relay-state/"><template><style>:host{display:inline-block;}.title{vertical-align:middle;font-size:15px;padding:5px;min-width:150px;display:inline-block;}.card-content{font-size:15px;min-width:15px;min-height:15px;vertical-align:middle;text-align:center;padding:5px;margin:5px;display:inline-block;}.normal{color:white;}.red{color:red;}</style><iron-ajax id="relayStatus" url="http://[[host]]/control/[[xid]]" handle-as="json" on-response="_handleResponse"><div>ajax</div></iron-ajax><iron-ajax id="relayModeSet" url="http://[[host]]/control/[[xid]]?mode=[[mode]]&amp;duration=[[duration]]" handle-as="json" on-response="_handleResponseSet"><div>ajax</div></iron-ajax><paper-material elevation="1" class="title">{{name}}:&nbsp;<paper-material elevation="2" class="card-content"><div id="state">{{_format(state)}}</div></paper-material><br><paper-icon-button id="modeAuto" icon="image:flash-auto" style="color: blue"></paper-icon-button><paper-icon-button id="modeOn" icon="image:flash-on" style="color: blue"></paper-icon-button><paper-icon-button id="modeOff" icon="image:flash-off" style="color: blue"></paper-icon-button></paper-material></template><script>
 "use strict";
 
 class RelayState  extends Polymer.Element {
@@ -20235,6 +20235,13 @@ class RelayState  extends Polymer.Element {
             readOnly: false,
             notify: true,
             value: "Unnamed: ",
+            reflectToAttribute: true
+          },
+          duration:{
+            type: Number,
+            readOnly: false,
+            notify: true,
+            value: 30,
             reflectToAttribute: true
           },
           xid: {
@@ -20619,8 +20626,8 @@ customElements.define(HistoryData.is, HistoryData);
                             ctx.$.flowerbad.update();
                             break;
                           case "grapes":
-                              ctx.$.grapes.update();
-                              break;
+                            ctx.$.grapes.update();
+                            break;
 
                           default:
                         }
