@@ -107,13 +107,13 @@ func (r *Ir) SetMode(str string) error {
 	r.RelayMode = str
 	log.Println("irRelay.SetMode: set to ", r.RelayMode, " : ", r.GetMode())
 
-	if r.stop != nil {
-		r.stop <- true
-	}
+	//if r.stop != nil {
+	//	r.stop <- true
+	//}
 
-	if r.GetMode() == ON {
-		r.stop = r.scheduleRelayAuto(turnoff, time.Duration(INTERVAL*60)*time.Second)
-	}
+	//if r.GetMode() == ON {
+	//	r.stop = r.scheduleRelayAuto(turnoff, time.Duration(INTERVAL*60)*time.Second)
+	//}
 
 	r.stateChanged()
 	r.Wh.ReportWsEvent("relayStateChanged", r.Relay.Name())
