@@ -22,7 +22,7 @@ const (
 	AUTO = "Auto"
 
 	/*INTERVAL - default interval to keep relay on*/
-	INTERVAL = 10
+	INTERVAL = 1
 	/*TESTS emanbles test mode*/
 	//TESTS = true
 )
