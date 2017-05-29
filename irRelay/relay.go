@@ -7,6 +7,7 @@ import (
 	"irrigation/wsHandler"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/hybridgroup/gobot/platforms/gpio"
@@ -23,8 +24,6 @@ const (
 
 	/*INTERVAL - default interval to keep relay on*/
 	INTERVAL = 1
-	/*TESTS emanbles test mode*/
-	//TESTS = true
 )
 
 type fn func()
@@ -81,7 +80,14 @@ func New(name string, pin string, w *wsHandler.WsHandler, f fn) Ir {
 /*
 SetMode sets the behavior for the relay
 */
-func (r *Ir) SetMode(str string) error {
+func (r *Ir) SetMode(str string, prm ...int) error {
+	duration := INTERVAL
+	if len(prm) > 0 {
+		duration = prm[0]
+	}
+	if duration > 30 && duration < 1 {
+		duration = INTERVAL
+	}
 	log.Println("irRelay.SetMode: " + r.Relay.Name())
 	if str != ON && str != OFF && str != AUTO {
 		log.Println("irRelay.SetMode: Wrong parameter")
@@ -120,7 +126,7 @@ func (r *Ir) SetMode(str string) error {
 
 	if r.GetMode() == ON {
 		log.Println("Try to set scheduler")
-		r.stop = r.scheduleRelayAuto(turnoff, time.Duration(INTERVAL*60)*time.Second)
+		r.stop = r.scheduleRelayAuto(turnoff, time.Duration(duration*60)*time.Second)
 	}
 
 	log.Println("All done")
@@ -151,6 +157,12 @@ func (r *Ir) RelayHandler(w http.ResponseWriter, re *http.Request) {
 	st := re.FormValue("mode")
 	log.Println("Mode: " + st)
 
+	intv := re.FormValue("duration")
+	log.Println("For: " + intv)
+	duration := 0
+	if len(intv) > 0 {
+		duration, _ = strconv.Atoi(intv)
+	}
 	//set or get
 	if len(st) == 0 {
 		//log.Println("state requested:")
@@ -165,7 +177,7 @@ func (r *Ir) RelayHandler(w http.ResponseWriter, re *http.Request) {
 	}
 
 	//set
-	errr := r.SetMode(st)
+	errr := r.SetMode(st, duration)
 	if errr != nil {
 		http.Error(w, errr.Error(), http.StatusInternalServerError)
 		return
