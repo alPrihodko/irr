@@ -1,4 +1,4 @@
-<html><head><link rel="import" href="../../../bower_components/polymer/polymer.html"><link rel="import" href="../../../bower_components/paper-material/paper-material.html"></head><body><dom-module id="relay-state"><template><style>:host{display:inline-block;}.title{vertical-align:middle;font-size:15px;padding:5px;min-width:150px;display:inline-block;}.card-content{font-size:15px;min-width:15px;min-height:15px;vertical-align:middle;text-align:center;padding:5px;margin:5px;display:inline-block;}.normal{color:white;}.red{color:red;}</style><iron-ajax id="relayStatus" url="http://[[host]]/control/[[xid]]" handle-as="json" on-response="_handleResponse"><div>ajax</div></iron-ajax><iron-ajax id="relayModeSet" url="http://[[host]]/control/[[xid]]?mode=[[mode]]&amp;duration=[[duration]]" handle-as="json" on-response="_handleResponseSet"><div>ajax</div></iron-ajax><paper-material elevation="1" class="title">{{name}}:&nbsp;<paper-material elevation="2" class="card-content"><div id="state">{{_format(state)}}</div></paper-material><br><paper-icon-button id="modeAuto" icon="image:flash-auto" style="color: blue"></paper-icon-button><paper-icon-button id="modeOn" icon="image:flash-on" style="color: blue"></paper-icon-button><paper-icon-button id="modeOff" icon="image:flash-off" style="color: blue"></paper-icon-button></paper-material></template><script>
+<html><head><link rel="import" href="../../../bower_components/polymer/polymer.html"><link rel="import" href="../../../bower_components/paper-material/paper-material.html"></head><body><dom-module id="relay-state"><template><style>:host{display:inline-block;}.title{vertical-align:middle;font-size:15px;padding:5px;min-width:150px;display:inline-block;}.card-content{font-size:15px;min-width:15px;min-height:15px;vertical-align:middle;text-align:center;padding:5px;margin:5px;display:inline-block;}.normal{color:white;}.red{color:red;}</style><iron-ajax id="relayStatus" url="http://[[host]]/control/[[xid]]" handle-as="json" on-response="_handleResponse"><div>ajax</div></iron-ajax><iron-ajax id="relayModeSet" url="http://[[host]]/control/[[xid]]?mode=[[mode]]&amp;duration=[[duration]]" handle-as="json" on-response="_handleResponseSet"><div>ajax</div></iron-ajax><paper-material elevation="1" class="title">{{name}}:&nbsp;<paper-material elevation="2" class="card-content"><div id="state">{{_format(state)}}</div></paper-material><br><paper-icon-button id="modeAuto" icon="image:flash-auto" style="color: blue"></paper-icon-button><paper-icon-button id="modeOn" icon="image:flash-on" style="color: blue"></paper-icon-button><paper-icon-button id="modeOff" icon="image:flash-off" style="color: blue"></paper-icon-button><div>[[durationTimer]]</div></paper-material></template><script>
 "use strict";
 
 class RelayState  extends Polymer.Element {
@@ -129,6 +129,18 @@ class RelayState  extends Polymer.Element {
             value: 30,
             reflectToAttribute: true
           },
+          interval:{
+            type: Number,
+            readOnly: false,
+            notify: false,
+            reflectToAttribute: false
+          },
+          durationTimer:{
+            type: String,
+            readOnly: false,
+            notify: true,
+            reflectToAttribute: true
+          },
           xid: {
             type: String,
             readOnly: false,
@@ -144,8 +156,14 @@ class RelayState  extends Polymer.Element {
     }
 
     _setmode (mode) {
+      if (this.interval) {
+        this.stopTimer(this.interval);
+      }
       this.mode = mode;
       this.$.relayModeSet.generateRequest();
+      if (mode == StaticGlobals.ON()) {
+        this.startTimer(this.duration*60);
+      }
     };
 
     changeMode(mode) {
@@ -154,6 +172,44 @@ class RelayState  extends Polymer.Element {
           return false;
         };
         this._setmode(mode);
+    };
+
+
+    startTimer(duration) {
+        var start = Date.now(),
+            diff,
+            minutes,
+            seconds;
+        var self = this;
+        function timer() {
+            // get the number of seconds that have elapsed since
+            // startTimer() was called
+            diff = duration - (((Date.now() - start) / 1000) | 0);
+
+            // does the same job as parseInt truncates the float
+            minutes = (diff / 60) | 0;
+            seconds = (diff % 60) | 0;
+
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            self.durationTimer = minutes + ":" + seconds + " left";
+
+            if (diff <= 0) {
+                // add one second so that the count down starts at the full duration
+                // example 05:00 not 04:59
+                start = Date.now() + 1000;
+                self.stopTimer(self.interval);
+            }
+        };
+        // we don't want to wait a full second before the timer starts
+        timer();
+        self.interval =  setInterval(timer, 1000);
+    };
+
+    stopTimer(tm) {
+      this.durationTimer = "";
+      clearInterval(tm);
     };
 
 };
