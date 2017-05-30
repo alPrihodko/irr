@@ -111,11 +111,20 @@ class RelayState  extends Polymer.Element {
         console.log(data.detail.response);
         this.state = data.detail.response.State;
         this.mode = data.detail.response.RelayMode;
+        this.duration = data.detail.response.Timer;
         this.drawMode();
     };
 
     drawMode() {
       console.log("drawMode called with mode: " + this.mode);
+      if (this.interval) {
+        this.stopTimer(this.interval);
+      }
+
+      if (this.mode == StaticGlobals.ON()) {
+        this.startTimer(this.duration*60);
+      }
+
       switch (this.mode) {
         case "":
           this.$.modeAuto.style = "color: red;"
@@ -231,14 +240,9 @@ class RelayState  extends Polymer.Element {
     }
 
     _setmode (mode) {
-      if (this.interval) {
-        this.stopTimer(this.interval);
-      }
+      this.duration = 30;
       this.mode = mode;
       this.$.relayModeSet.generateRequest();
-      if (mode == StaticGlobals.ON()) {
-        this.startTimer(this.duration*60);
-      }
     };
 
     changeMode(mode) {
