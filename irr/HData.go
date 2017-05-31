@@ -27,17 +27,17 @@ type HData struct {
 	GardenName  string `json:"GardenName, string"`
 	GardenMode  string `json:"GardenMode, string"`
 	GardenState bool   `json:"GardenState, boolean"`
-	GardenTimer int    `json:"GardenTimer, int"`
+	GardenTimer int64  `json:"GardenTimer, Number"`
 
 	FlowerBadName  string `json:"FlowerBadName, string"`
 	FlowerBadMode  string `json:"FlowerBadMode, string"`
 	FlowerBadState bool   `json:"FlowerBadState, boolean"`
-	FlowerBadTimer int    `json:"FlowerBadTimer, int"`
+	FlowerBadTimer int64  `json:"FlowerBadTimer, Number"`
 
 	GrapesName  string `json:"GrapesName, string"`
 	GrapesMode  string `json:"GrapesMode, string"`
 	GrapesState bool   `json:"GrapesState, boolean"`
-	GrapesTimer int    `json:"GrapesTimer, int"`
+	GrapesTimer int64  `json:"GrapesTimer, Number"`
 
 	Timestamp int `json:"Timestamp, int"`
 	Index     int `json:"index, int"`
