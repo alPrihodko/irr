@@ -120,6 +120,7 @@ func (r *Ir) SetMode(str string, prm ...int) error {
 	if r.stop != nil {
 		log.Println("Dropping timer")
 		r.from = 0
+		log.Println("from: ", r.from)
 		close(r.stop)
 		r.stop = nil
 	}
@@ -130,6 +131,7 @@ func (r *Ir) SetMode(str string, prm ...int) error {
 	if mode == ON {
 		log.Println("Try to set scheduler")
 		r.from = int(time.Now().Unix())
+		log.Println("from: ", r.from)
 		r.stop = r.scheduleRelayAuto(turnoff, time.Duration(duration*60)*time.Second)
 	}
 
@@ -145,7 +147,7 @@ func (r *Ir) GetMode() (string, int) {
 	if r.from > 0 {
 		r.Timer = int(time.Now().Unix()) - r.from
 	}
-
+	log.Println("returning timer: ", r.from)
 	return r.RelayMode, r.Timer
 }
 
