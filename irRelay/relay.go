@@ -38,7 +38,7 @@ type irrigationRelay struct {
 	RelayState   bool `json:"State, boolean"`
 	stateChanged fn
 	stop         chan bool
-	Timer        int `json:"Timer, int"`
+	Timer        int `json:"Timer, Number"`
 	from         int
 }
 
@@ -147,7 +147,7 @@ func (r *Ir) GetMode() (string, int) {
 	if r.from > 0 {
 		r.Timer = int(time.Now().Unix()) - r.from
 	}
-	log.Println("returning timer: ", r.from)
+	log.Println("returning timer: ", r.Timer)
 	return r.RelayMode, r.Timer
 }
 
@@ -165,10 +165,10 @@ func (r *Ir) RelayHandler(w http.ResponseWriter, re *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	st := re.FormValue("mode")
-	log.Println("Mode: " + st)
+	//log.Println("Mode: " + st)
 
 	intv := re.FormValue("duration")
-	log.Println("For: " + intv)
+	//log.Println("For: " + intv)
 	duration := 0
 	if len(intv) > 0 {
 		duration, _ = strconv.Atoi(intv)
@@ -180,7 +180,7 @@ func (r *Ir) RelayHandler(w http.ResponseWriter, re *http.Request) {
 		if r.from > 0 {
 			r.Timer = int(time.Now().Unix()) - r.from
 		}
-		log.Println("returning timer: ", r.from)
+		log.Println("returning timer: ", r.Timer)
 		b, err := r.ToJSON()
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
