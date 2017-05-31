@@ -177,6 +177,10 @@ func (r *Ir) RelayHandler(w http.ResponseWriter, re *http.Request) {
 	if len(st) == 0 {
 		//log.Println("state requested:")
 		r.RelayState = r.GetState()
+		if r.from > 0 {
+			r.Timer = int(time.Now().Unix()) - r.from
+		}
+		log.Println("returning timer: ", r.from)
 		b, err := r.ToJSON()
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
