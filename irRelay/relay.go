@@ -39,6 +39,7 @@ type irrigationRelay struct {
 	stateChanged fn
 	stop         chan bool
 	Timer        int `json:"Timer, int"`
+	from         int
 }
 
 /*Ir irrigation relay type */
@@ -69,7 +70,7 @@ func Stop() {
 
 /*New - returns new relay instance */
 func New(name string, pin string, w *wsHandler.WsHandler, f fn) Ir {
-	rel := Ir{"", gpio.NewLedDriver(r, name, pin), w, false, f, nil, 0}
+	rel := Ir{"", gpio.NewLedDriver(r, name, pin), w, false, f, nil, 0, 0}
 	rel.Relay.On()
 	//rel.Relay =
 	relays[pin] = rel
@@ -118,6 +119,7 @@ func (r *Ir) SetMode(str string, prm ...int) error {
 
 	if r.stop != nil {
 		log.Println("Dropping timer")
+		r.from = 0
 		close(r.stop)
 		r.stop = nil
 	}
@@ -127,6 +129,7 @@ func (r *Ir) SetMode(str string, prm ...int) error {
 	mode, _ := r.GetMode()
 	if mode == ON {
 		log.Println("Try to set scheduler")
+		r.from = int(time.Now().Unix())
 		r.stop = r.scheduleRelayAuto(turnoff, time.Duration(duration*60)*time.Second)
 	}
 
@@ -139,6 +142,10 @@ GetMode sets the behavior for the relay
 */
 func (r *Ir) GetMode() (string, int) {
 	log.Println("return mode for relay: ", r.RelayState, " name: ", r.Relay.Name())
+	if r.from > 0 {
+		r.Timer = int(time.Now().Unix()) - r.from
+	}
+
 	return r.RelayMode, r.Timer
 }
 
