@@ -39,7 +39,7 @@ type irrigationRelay struct {
 	stateChanged fn
 	stop         chan bool
 	Timer        int64 `json:"Timer, Number"`
-	from         int64
+	timerTo      int64
 }
 
 /*Ir irrigation relay type */
@@ -119,8 +119,9 @@ func (r *Ir) SetMode(str string, prm ...int) error {
 
 	if r.stop != nil {
 		log.Println("Dropping timer")
-		r.from = 0
-		log.Println("from: ", r.from)
+		r.timerTo = 0
+
+		//log.Println("timerTo: ", r.from)
 		close(r.stop)
 		r.stop = nil
 	}
@@ -129,9 +130,8 @@ func (r *Ir) SetMode(str string, prm ...int) error {
 	if mode == ON {
 		log.Println("Try to set scheduler")
 		d := time.Duration(duration*60) * time.Second
-		r.from = time.Now().Add(d).Unix()
-		r.Timer = time.Now().Unix() - r.from
-		log.Println("timer set to: ", r.from)
+		r.timerTo = time.Now().Add(d).Unix()
+		r.calculateTimer()
 		r.stop = r.scheduleRelayAuto(turnoff, d)
 	}
 
@@ -141,15 +141,21 @@ func (r *Ir) SetMode(str string, prm ...int) error {
 	return nil
 }
 
+func (r *Ir) calculateTimer() {
+	if r.timerTo > 0 {
+		r.Timer = r.timerTo - time.Now().Unix()
+	} else {
+		r.Timer = 0
+	}
+	log.Println("returning timer: ", r.Timer)
+}
+
 /*
 GetMode sets the behavior for the relay
 */
 func (r *Ir) GetMode() (string, int64) {
 	log.Println("return mode for relay: ", r.RelayState, " name: ", r.Relay.Name())
-	if r.from > 0 {
-		r.Timer = time.Now().Unix() - r.from
-	}
-	log.Println("returning timer: ", r.Timer)
+	r.calculateTimer()
 	return r.RelayMode, r.Timer
 }
 
@@ -179,9 +185,7 @@ func (r *Ir) RelayHandler(w http.ResponseWriter, re *http.Request) {
 	if len(st) == 0 {
 		//log.Println("state requested:")
 		r.RelayState = r.GetState()
-		if r.from > 0 {
-			r.Timer = time.Now().Unix() - r.from
-		}
+		r.calculateTimer()
 		log.Println("returning timer: ", r.Timer)
 		b, err := r.ToJSON()
 		if err != nil {
