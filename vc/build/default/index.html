@@ -20151,11 +20151,20 @@ class RelayState  extends Polymer.Element {
         console.log(data.detail.response);
         this.state = data.detail.response.State;
         this.mode = data.detail.response.RelayMode;
+        this.duration = data.detail.response.Timer;
         this.drawMode();
     };
 
     drawMode() {
       console.log("drawMode called with mode: " + this.mode);
+      if (this.interval) {
+        this.stopTimer(this.interval);
+      }
+
+      if (this.mode == StaticGlobals.ON()) {
+        this.startTimer(this.duration);
+      }
+
       switch (this.mode) {
         case "":
           this.$.modeAuto.style = "color: red;"
@@ -20241,7 +20250,7 @@ class RelayState  extends Polymer.Element {
             type: Number,
             readOnly: false,
             notify: true,
-            value: 30,
+            value: 1800,
             reflectToAttribute: true
           },
           interval:{
@@ -20271,14 +20280,9 @@ class RelayState  extends Polymer.Element {
     }
 
     _setmode (mode) {
-      if (this.interval) {
-        this.stopTimer(this.interval);
-      }
+      this.duration = 1800;
       this.mode = mode;
       this.$.relayModeSet.generateRequest();
-      if (mode == StaticGlobals.ON()) {
-        this.startTimer(this.duration*60);
-      }
     };
 
     changeMode(mode) {
@@ -20331,7 +20335,7 @@ class RelayState  extends Polymer.Element {
 
 customElements.define(RelayState.is, RelayState);
 
-</script></dom-module><dom-module id="irr-state" assetpath="src/irr-app/irr-state/"><template><style>:host{display:inline-block;}.title{vertical-align:middle;font-size:15px;padding:5px;min-width:150px;display:inline-block;}.card-content{font-size:15px;min-width:15px;min-height:15px;vertical-align:middle;text-align:center;padding:5px;margin:5px;display:inline-block;}.fixed{font-size:15px;width:30px;min-width:30px;min-height:15px;vertical-align:middle;text-align:center;padding:5px;margin:5px;display:inline-block;}.date{font-size:15px;width:100px;min-width:100px;min-height:15px;vertical-align:middle;text-align:center;padding:5px;margin:5px;display:inline-block;}.col1{font-size:15px;width:80px;min-width:80px;min-height:15px;vertical-align:middle;text-align:center;padding:5px;margin:5px;display:inline-block;}.normal{color:white;}.red{color:red;}</style><iron-ajax id="currentState" url="http://[[host]]/control/currentState" handle-as="json" on-response="_handleResponse"><div>ajax</div></iron-ajax><paper-material elevation="1" class="card-content"><div class="col1"><b>Город</b></div>&nbsp;<div class="fixed"><span id="garden">{{_format(curr.garden.state)}}</span></div>&nbsp;<div class="fixed">{{curr.garden.mode}}</div><div class="col1"><b>Палісад</b></div>&nbsp;<div class="fixed"><span id="flowerbad">{{_format_f(curr.flowerbad.state)}}</span></div>&nbsp;<div class="fixed">{{curr.flowerbad.mode}}</div><div class="col1"><b>Виногр</b></div>&nbsp;<div class="fixed"><span id="grapes">{{_format_f(curr.grapes.state)}}</span></div>&nbsp;<div class="fixed">{{curr.grapes.mode}}</div>&nbsp;<div class="date">{{curr.date}}</div></paper-material></template><script>
+</script></dom-module><dom-module id="irr-state" assetpath="src/irr-app/irr-state/"><template><style>:host{display:inline-block;}.title{vertical-align:middle;font-size:15px;padding:5px;min-width:150px;display:inline-block;}.card-content{font-size:15px;min-width:15px;min-height:15px;vertical-align:middle;text-align:center;padding:5px;margin:5px;display:inline-block;}.fixed{font-size:15px;width:30px;min-width:30px;min-height:15px;vertical-align:middle;text-align:center;padding:5px;margin:5px;display:inline-block;}.date{font-size:15px;width:100px;min-width:100px;min-height:15px;vertical-align:middle;text-align:center;padding:5px;margin:5px;display:inline-block;}.col1{font-size:15px;width:80px;min-width:80px;min-height:15px;vertical-align:middle;text-align:center;padding:5px;margin:5px;display:inline-block;}.normal{color:white;}.red{color:red;}</style><iron-ajax id="currentState" url="http://[[host]]/control/currentState" handle-as="json" on-response="_handleResponse"><div>ajax</div></iron-ajax><paper-material elevation="1" class="card-content"><div class="col1"><b>Город</b></div>&nbsp;<div class="fixed"><span id="garden">{{_format(curr.garden.state)}}</span></div>&nbsp;<div class="fixed">{{curr.garden.mode}}</div><div class="col1"><b>Палісад</b></div>&nbsp;<div class="fixed"><span id="flowerbad">{{_format_f(curr.flowerbad.state)}}</span></div>&nbsp;<div class="fixed">{{curr.flowerbad.mode}}</div><div class="col1"><b>Виногр</b></div>&nbsp;<div class="fixed"><span id="grapes">{{_format_g(curr.grapes.state)}}</span></div>&nbsp;<div class="fixed">{{curr.grapes.mode}}</div>&nbsp;<div class="date">{{curr.date}}</div></paper-material></template><script>
 "use strict";
 
 class IrrState  extends Polymer.Element {
