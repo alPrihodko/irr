@@ -23,7 +23,7 @@ const (
 	AUTO = "Auto"
 
 	/*INTERVAL - default interval to keep relay on*/
-	INTERVAL = 1
+	INTERVAL = 60
 )
 
 type fn func()
@@ -87,7 +87,7 @@ func (r *Ir) SetMode(str string, prm ...int) error {
 	if len(prm) > 0 {
 		duration = prm[0]
 	}
-	if duration > 30 || duration < 1 {
+	if duration > 1800 || duration < 1 {
 		duration = INTERVAL
 	}
 	log.Println("irRelay.SetMode: " + r.Relay.Name())
@@ -129,7 +129,7 @@ func (r *Ir) SetMode(str string, prm ...int) error {
 	mode, _ := r.GetMode()
 	if mode == ON {
 		log.Println("Try to set scheduler")
-		d := time.Duration(duration*60) * time.Second
+		d := time.Duration(duration) * time.Second
 		r.timerTo = time.Now().Add(d).Unix()
 		r.calculateTimer()
 		r.stop = r.scheduleRelayAuto(turnoff, d)
