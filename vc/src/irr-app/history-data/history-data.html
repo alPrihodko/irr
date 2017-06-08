@@ -9,18 +9,11 @@
         display: inline-block;
       }
 
-      .title {
-          vertical-align: middle;
-          font-size: 15px;
-          padding: 5px;
-          min-width: 150px;
-          display: inline-block;
-      }
 
       .fixed {
-          font-size: 15px;
-          width: 30px;
-          min-width: 30px;
+          font-size: 10px;
+          width: 20px;
+          min-width: 20px;
           ;min-height: 15px;
           vertical-align: middle;
           text-align: center;
@@ -30,9 +23,9 @@
       }
 
       .date {
-          font-size: 15px;
-          width: 100px;
-          min-width: 100px;
+          font-size: 10px;
+          width: 45px;
+          min-width: 45px;
           ;min-height: 15px;
           vertical-align: middle;
           text-align: center;
@@ -42,9 +35,9 @@
       }
 
       .col1 {
-          font-size: 15px;
-          width: 80px;
-          min-width: 80px;
+          font-size: 10px;
+          width: 20px;
+          min-width: 00px;
           ;min-height: 15px;
           vertical-align: middle;
           text-align: center;
@@ -83,15 +76,15 @@
       <paper-material elevation="1" class="card-content">
         <div class="col1"><b>Город</b></div>
         &nbsp; <div class="fixed">{{_format(item.garden.state)}}</div>
-        &nbsp; <div class="fixed">{{item.garden.mode}}</div>
+        <!-- &nbsp; <div class="fixed">{{item.garden.mode}}</div> -->
 
         <div class="col1"><b>Палісад</b></div>
         &nbsp; <div class="fixed">{{_format(item.flowerbad.state)}}</div>
-        &nbsp; <div class="fixed">{{item.flowerbad.mode}}</div>
+        <!-- &nbsp; <div class="fixed">{{item.flowerbad.mode}}</div> -->
 
         <div class="col1"><b>Виногр</b></div>
         &nbsp; <div class="fixed">{{_format(item.grapes.state)}}</div>
-        &nbsp; <div class="fixed">{{item.grapes.mode}}</div>
+        <!--  &nbsp; <div class="fixed">{{item.grapes.mode}}</div> -->
 
         &nbsp; <div class="date">{{item.date}}</div>
       </paper-material>
