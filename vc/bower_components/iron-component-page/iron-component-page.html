@@ -28,7 +28,7 @@ Loads Polymer element and behavior documentation using
 documentation page including demos (if available).
 
 To display a warning inside an `iron-component-page` element,
-add the `.warning` class to a child.
+add the `warning` slot to a child.
 -->
 
 <dom-module id="iron-component-page">
@@ -185,7 +185,7 @@ add the `.warning` class to a child.
     <hydrolysis-analyzer id="analyzer" src="[[_srcUrl]]" transitive="[[transitive]]" clean analyzer="{{_hydroDesc}}" loading="{{_hydroLoading}}"></hydrolysis-analyzer>
     <iron-ajax id="ajax" url="[[docSrc]]" handle-as="json" on-response="_handleAjaxResponse" on-error="_handleError"></iron-ajax>
 
-    <app-header-layout>
+    <app-header-layout has-scrolling-region>
       <app-header id="headerPanel" fixed slot="header" effects="waterfall">
         <app-toolbar catalog-hidden>
           <div class="docs-header">
@@ -211,7 +211,7 @@ add the `.warning` class to a child.
             <div id="catalog-heading" catalog-only>
               <h2><span>[[active]]</span> <span class="version" hidden$="[[!version]]">[[version]]</span></h2>
             </div>
-            <content select=".warning"></content>
+            <slot name="warning"></slot>
             <iron-doc-viewer prefix="[[_fragmentPrefix]]" id="viewer" descriptor="{{_activeDescriptor}}"
               on-iron-doc-viewer-component-selected="_handleComponentSelectedEvent"></iron-doc-viewer>
             <div id="nodocs" hidden$="[[_activeDescriptor]]" class="no-docs">
