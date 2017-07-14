@@ -6,7 +6,15 @@ class StaticGlobals {
   };
 
   static GetHostName() {
-    return "sasha123.ddns.ukrtel.net:1235";
+    var host = window.location.hostname
+    var port = window.location.port
+    if (host == "localhost") {
+      host = "sasha123.ddns.ukrtel.net:1235";
+    } else {
+      host = host + ":" + port;
+    }
+    console.log("host:" + host);
+    return host;
   };
 
   static OFF () {
