@@ -8,7 +8,10 @@ trap 'err $LINENO' ERR
 
 HOST=192.168.1.20
 #HOST=sasha123.ddns.ukrtel.net
+HOST=192.168.0.213
 SERVICE=irrigation
+SERVICESHORT=irr
+
 
 deploy=pi\@"$HOST":/usr/local/bin
 deploy_home=pi\@"$HOST":/home/pi/$SERVICE
@@ -24,13 +27,13 @@ export GOARM=7
 ssh pi\@$HOST "mkdir -p /home/pi/$SERVICE" || exit 1
 ssh pi\@$HOST "mkdir -p /home/pi/$SERVICE/ui" || exit 1
 
-scp -r ui/build/defailt $deploy_ui 
+scp -r vc/build/default $deploy_ui 
 
 if [ "$1" == "all" ]; then
     go build || exit 1
-    ssh pi\@$HOST "sudo service $SERVICE stop" || exit 1
-    scp raspi-alarm $deploy || exit 1
-    ssh pi\@$HOST "sudo service $SERVICE start" || exit 1
+    ssh pi\@$HOST "sudo service $SERVICESHORT stop"
+    scp $SERVICE $deploy || exit 1
+    ssh pi\@$HOST "sudo service $SERVICESHORT start" || exit 1
 fi
 
 echo "Success"

@@ -24,7 +24,7 @@ const configFileName = "/etc/irrigation.conf"
 /*
 HISTORYDATASERIAL file which contains history data for my home
 */
-const HISTORYDATASERIAL = "/home/pi/goIrrigationData.b64"
+const HISTORYDATASERIAL = "goIrrigationData.b64"
 
 /*
 INTERVAL  Check sensors status with interval
@@ -79,7 +79,7 @@ func main() {
 	irr.CurrentState = historyData.Last()
 	http.Handle("/relays", websocket.Handler(relHandler))
 
-	http.Handle("/", http.FileServer(http.Dir("/home/pi/w/go/src/irrigation")))
+	http.Handle("/", http.FileServer(http.Dir("ui")))
 	http.HandleFunc("/control/currentState", irr.CurrentStateHandler)
 	http.HandleFunc("/control/hdata", historyData.HistoryDataHandler)
 	http.HandleFunc("/control/config", configHandler)
