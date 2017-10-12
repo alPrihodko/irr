@@ -6,7 +6,8 @@ After=rc-local.service blaster.service
 [Service]
 Type=simple
 EnvironmentFile=
-ExecStart=/home/pi/w/go/src/irrigation/irrigation 
+WorkingDirectory=/home/pi/irrigation
+ExecStart=/usr/local/bin/irrigation 
 ExecReload=/bin/kill -HUP $MAINPID
 KillMode=control-group
 RestartSec=10
